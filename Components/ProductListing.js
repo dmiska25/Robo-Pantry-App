@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { getProducts } from '../constants/mockProductCall';
 import { Link } from '@react-navigation/native';
 
@@ -11,14 +10,13 @@ const ProductListing = () => {
     return (
       <Link
         style={styles.listingLinkItem}
-        to={{screen: 'ProductDetailView'}}
+        to={{screen: 'ProductDetailView', params: {itemId: item.id}}}
       >
         {item.name}
       </Link>
     );
   };
-  const testRender = (item) => <Text>Hello</Text>;
-  const productKey = (product) => product.name;
+  const productKey = (product) => product.id.toString();
   
   return (
     <SafeAreaView style={styles.container}>
