@@ -3,9 +3,10 @@ import { FlatList, View, Text, StyleSheet, Button, SafeAreaView } from 'react-na
 import Accordion from 'react-native-collapsible/Accordion';
 import {getProduct} from '../constants/mockProductCall';
 
-const ProductDetails = ({navigation}) => {
+const ProductDetails = ({route, navigation}) => {
+    const {itemId} = route.params;
     const [activeSections, setActiveSections] = useState([0]);
-    const [product, setProduct] = useState(getProduct);
+    const [product, setProduct] = useState(getProduct(itemId));
 
     const renderContent = ({purchases}) => (
         <View>
@@ -28,6 +29,8 @@ const ProductDetails = ({navigation}) => {
             <Text>{productVariant.brand}</Text>
         </View>
     );
+
+    if (product == null) return <Text>Undefined</Text>;
 
     return (
         <SafeAreaView style={styles.container}>
