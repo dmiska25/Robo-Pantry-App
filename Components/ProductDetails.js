@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
-import { getProducts } from '../apiCalls/RoboPantryAPICalls';
-import {getProduct} from '../constants/mockProductCall';
-import { roboPantryAPI } from '../Hooks/RoboPantryAPI';
+import { getProductById } from '../apiCalls/RoboPantryAPICalls';
+import { useAPI } from '../Hooks/useAPI';
 
 const ProductDetails = ({route, navigation}) => {
     const {itemId} = route.params;
     const [activeSections, setActiveSections] = useState([0]);
-    const [isLoading, product, error] = roboPantryAPI(getProducts, {id: itemId});
+    const [isLoading, product, error] = useAPI(getProductById, itemId);
 
     const renderContent = ({purchases}) => (
         <View>

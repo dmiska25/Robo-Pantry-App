@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { getProducts } from '../constants/mockProductCall';
+import { getProducts } from '../apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
-import { roboPantryAPI } from '../Hooks/RoboPantryAPI';
+import { useAPI } from '../Hooks/useAPI';
 
 const ProductListing = () => {
-  const [isLoading, products, error] = roboPantryAPI(getProducts);
+  const [isLoading, products, error] = useAPI(getProducts);
 
   const renderProduct = ({item}) => {
     return (
       <Link
         style={styles.listingLinkItem}
-        to={{screen: 'ProductDetailView', params: {itemId: item.id}}}
+        to={{screen: 'Product Details', params: {itemId: item.id}}}
       >
         {item.name}
       </Link>
