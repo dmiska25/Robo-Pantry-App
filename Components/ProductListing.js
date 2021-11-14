@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { getProducts } from '../constants/mockProductCall';
+import { getProducts } from '../apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
+import { useAPI } from '../Hooks/useAPI';
 
 const ProductListing = () => {
-  const [products, setProducts] = useState(getProducts);
+  const [isLoading, products, error] = useAPI(getProducts);
 
   const renderProduct = ({item}) => {
     return (
       <Link
         style={styles.listingLinkItem}
-        to={{screen: 'ProductDetailView', params: {itemId: item.id}}}
+        to={{screen: 'Product Details', params: {itemId: item.id}}}
       >
         {item.name}
       </Link>
@@ -18,6 +19,10 @@ const ProductListing = () => {
   };
   const productKey = (product) => product.id.toString();
   
+  if(isLoading) return <Text>Loading...</Text>;
+  // TODO: Should not print error directly to screen!
+  if(error) return <Text>{error}</Text>;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>My Pantry</Text>

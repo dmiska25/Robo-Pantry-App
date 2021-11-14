@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FlatList, View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
-import {getProduct} from '../constants/mockProductCall';
+import { getProductById } from '../apiCalls/RoboPantryAPICalls';
+import { useAPI } from '../Hooks/useAPI';
 
 const ProductDetails = ({route, navigation}) => {
     const {itemId} = route.params;
     const [activeSections, setActiveSections] = useState([0]);
-    const [product, setProduct] = useState(getProduct(itemId));
+    const [isLoading, product, error] = useAPI(getProductById, itemId);
 
     const renderContent = ({purchases}) => (
         <View>
@@ -30,7 +31,9 @@ const ProductDetails = ({route, navigation}) => {
         </View>
     );
 
-    if (product == null) return <Text>Undefined</Text>;
+    if (isLoading) return <Text>Loading</Text>;
+    // TODO: Should not print error directly to screen!
+    if (error) return <Text>{error}</Text>
 
     return (
         <SafeAreaView style={styles.container}>
