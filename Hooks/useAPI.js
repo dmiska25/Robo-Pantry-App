@@ -16,6 +16,7 @@ export const useAPI = (apiFunction, params) => {
             .catch((err) => {
                 setError("Something went wrong!");
                 setIsLoading(false);
+                console.log(err);
             });
     }, [apiFunction, params]);
 
