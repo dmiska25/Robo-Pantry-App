@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { getProducts } from '../apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
 import { useAPI } from '../Hooks/useAPI';
@@ -19,7 +19,7 @@ const ProductListing = () => {
   };
   const productKey = (product) => product.id.toString();
   
-  if(isLoading) return <Text>Loading...</Text>;
+  if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" />;
   // TODO: Should not print error directly to screen!
   if(error) return <Text>{error}</Text>;
 
@@ -64,7 +64,11 @@ const styles = StyleSheet.create({
     color: 'blue',
     justifyContent: 'center',
     color: 'black'
-  }
+  },
+  loadingSymbol: {
+    textAlign: 'center',
+    marginTop: '20%'
+}
 });
 
 export default ProductListing;

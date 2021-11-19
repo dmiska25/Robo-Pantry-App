@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
+import { FlatList, View, Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import Accordion from 'react-native-collapsible/Accordion';
 import { getProductById } from '../apiCalls/RoboPantryAPICalls';
 import { useAPI } from '../Hooks/useAPI';
@@ -31,7 +31,7 @@ const ProductDetails = ({route, navigation}) => {
         </View>
     );
 
-    if (isLoading) return <Text>Loading</Text>;
+    if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" />;
     // TODO: Should not print error directly to screen!
     if (error) return <Text>{error}</Text>
 
@@ -78,16 +78,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
     },
-    productVariantCard: {
-        width: '100%',
-        borderColor: 'black',
-        borderWidth: 1,
-        flex: 1,
-        padding: '5%',
-        fontSize: 20,
-        color: 'blue',
-        justifyContent: 'center'
-    },
     header: {
         display: 'flex',
         flexDirection: 'row'
@@ -95,6 +85,10 @@ const styles = StyleSheet.create({
     backButton: {
         flex: 1
     },
+    loadingSymbol: {
+        textAlign: 'center',
+        marginTop: '20%'
+    }
 });
 
 export default ProductDetails;

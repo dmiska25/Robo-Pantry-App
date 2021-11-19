@@ -1,12 +1,9 @@
 import React from 'react';
-import ProductListing from './Components/ProductListing';
-import ProductDetails from './Components/ProductDetails';
-import { View, StatusBar, SafeAreaView, Text } from 'react-native';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createServer } from "miragejs";
-import { getProduct, getProducts } from './constants/mockProductData';
 import { startMockAPIServer } from './mockAPI/MockAPI';
+import ProductListing from './Components/ProductListing';
+import ProductDetails from './Components/ProductDetails';
 
 const Stack = createNativeStackNavigator();
 
