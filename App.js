@@ -1,9 +1,9 @@
 import React from 'react';
-import { NavigationContainer, StackActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { startMockAPIServer } from './RoboPantryApp/mockAPI/MockAPI';
-import ProductListing from './RoboPantryApp/Components/ProductListing';
-import ProductDetails from './RoboPantryApp/Components/ProductDetails';
+import { startMockAPIServer } from './main/content/mockAPI/MockAPI';
+import ProductListing from './main/content/Components/ProductListing';
+import ProductDetails from './main/content/Components/ProductDetails';
 
 const Stack = createNativeStackNavigator();
 
