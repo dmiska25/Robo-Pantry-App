@@ -27,5 +27,6 @@ it("shows a products details from our mock api server", async () => {
       .get("/robo-pantry/products/9")
       .then((res) => data = res.data)
       .catch((err) => console.log(err));
+  console.log("recieved: "+data)
   expect(data).toEqual({"id": 9, "name": "White Bread", "productVariants": [{"barcode": 4756456, "brand": "Great Value", "id": 2, "productsOnHand": 2, "purchases": [{"id": 3, "productsPurchased": 1, "purchaseDate": "2021-09-19T05:00:00.000Z"}, {"id": 4, "productsPurchased": 1, "purchaseDate": "2021-09-22T05:00:00.000Z"}], "unitsPerProduct": 22}], "unitOfMeasure": "unit", "unitsOnHand": 44});
 })
