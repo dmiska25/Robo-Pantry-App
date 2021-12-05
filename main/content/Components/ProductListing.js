@@ -12,6 +12,7 @@ const ProductListing = () => {
       <Link
         style={styles.listingLinkItem}
         to={{screen: 'Product Details', params: {itemId: item.id}}}
+        testID="listingProduct"
       >
         {item.name}
       </Link>
@@ -19,7 +20,7 @@ const ProductListing = () => {
   };
   const productKey = (product) => product.id.toString();
   
-  if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" />;
+  if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID='loadComponent'/>;
   // TODO: Should not print error directly to screen!
   if(error) return <Text>{error}</Text>;
 
