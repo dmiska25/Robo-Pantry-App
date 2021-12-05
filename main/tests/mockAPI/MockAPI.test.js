@@ -4,10 +4,11 @@ import axios from "axios"
 import * as mockData from "../../content/constants/mockProductData";
 
 // initiate test server
-let server
+let server;
 
 beforeEach(() => {
-  server = startMockAPIServer({environment: "test"});
+  // setting mockData to default allows to mock getProduct and getProducts
+  server = startMockAPIServer({environment: "test", mockData: "default"});
 })
 
 afterEach(() => {
@@ -53,7 +54,7 @@ const productMock = {
   ]
 }
 
-const productsExpected = JSON.parse(JSON.stringify(productsMock));;
+const productsExpected = JSON.parse(JSON.stringify(productsMock));
 const productExpected = JSON.parse(JSON.stringify(productMock));
 
 
