@@ -13,19 +13,28 @@ export const getProducts = () => {
 }
 
 export const getProductById = (id) => {
-    if (!id || !Number.isInteger(id)) throw new TypeError("Must provide a valid int as a id!");
+    if (!id || !Number.isInteger(id)) throw new TypeError(`Must provide a valid int as an id! recieved value: ${id}`);
     const url = `${BASE_URL}/products/${id}`;
     return axios.get(url, {
-        transformResponse: (res) => stdDeserialize(res)
+        transformResponse: (res) => detailsDeserialize(res)
     });
 };
 
 // helper functions
 
-const stdDeserialize = (res) => JSON.parse(res, (key, value) => parseKeyValue(key,value));
+const stdDeserialize = (res) => {
+    const {products} = JSON.parse(res, (key, value) => parseKeyValue(key,value));
+    return products;
+}
+
+const detailsDeserialize = (res) => {
+    const {product} = JSON.parse(res, (key, value) => parseKeyValue(key,value));
+    return product;
+}
 
 const parseKeyValue = (key, value) => {
     switch(key) {
+        case 'id': return parseInt(value);   // TODO: have miraje return an int!
         case 'unitOfMeasure': return getUnitOfMeasureFromJson(value);
         case 'purchaseDate': return new Date(value);
         default: return value;
