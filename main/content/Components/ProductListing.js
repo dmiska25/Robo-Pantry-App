@@ -12,6 +12,7 @@ const ProductListing = () => {
       <Link
         style={styles.listingLinkItem}
         to={{screen: 'Product Details', params: {itemId: item.id}}}
+        testID="listingProduct"
       >
         {item.name}
       </Link>

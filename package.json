@@ -39,6 +39,9 @@
   },
   "private": true,
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": [
+      "<rootDir>/jest.reactnav.setup.js"
+    ]
   }
 }

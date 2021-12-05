@@ -9,6 +9,7 @@ const ProductDetails = ({route}) => {
     const {itemId} = route.params;
     const [isLoading, product, error] = useAPI(getProductById, itemId);
 
+    // TODO: calculate last purchased on the backend
     const calculateLastPurchase = () => {
         return product.productVariants
         .flatMap(productVariant => productVariant.purchases
@@ -18,7 +19,7 @@ const ProductDetails = ({route}) => {
         .toLocaleDateString();
     }
 
-    if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" />;
+    if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID="loadComponent"/>;
     // TODO: Should not print error directly to screen!
     if (error) return <Text>{error}</Text>
 
