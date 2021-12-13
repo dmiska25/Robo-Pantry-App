@@ -8,38 +8,6 @@ import StandardPageDeliminator from "./StandardPageDeliminator";
 const AccordionDetails = ({sectionData}) => {
     const [activeSections, setActiveSections] = useState([0]);
 
-    const renderPurchasesTable = (purchases) => {
-        const purchasesHeaderData = ["Quantity Purchased", "Purchase Date"];
-        const purchasesRowData = purchases.map((purchase) => [purchase.productsPurchased, purchase.purchaseDate.toLocaleDateString()]);
-        return (
-            <Table>
-                <Row data={purchasesHeaderData}/>
-                <Rows data={purchasesRowData}/>
-            </Table>
-        );
-    }
-
-    const renderContent = ({purchases}) => (
-        <View>
-            <StandardPageDeliminator/>
-            {renderPurchasesTable(purchases)}
-        </View>
-    );
-
-    const renderHeader = (productVariant) => (
-        <View style={styles.detailsHeaderContainer}>
-            <Text>Products on Hand: {productVariant.productsOnHand}</Text>
-            <Text>Units per product: {productVariant.unitsPerProduct}</Text>
-            <Text style={styles.detailsHeaderText}>Purchase Details ▼</Text>
-        </View>
-    );
-
-    const renderSectionTitle = (productVariant) => (
-        <View style={styles.titleContainer}>
-            <Text style={styles.titleText}>{productVariant.brand}</Text>
-        </View>
-    );
-
     return (
         <View>
             <Accordion
@@ -50,12 +18,43 @@ const AccordionDetails = ({sectionData}) => {
                 renderContent={renderContent}
                 renderHeader={renderHeader}
                 onChange={(activeSections) => {setActiveSections(activeSections)}}
+                testID="accordion"
             />
         </View>
     )
 }
 
-export default AccordionDetails;
+const renderPurchasesTable = (purchases) => {
+    const purchasesHeaderData = ["Quantity Purchased", "Purchase Date"];
+    const purchasesRowData = purchases.map((purchase) => [purchase.productsPurchased, purchase.purchaseDate.toLocaleDateString()]);
+    return (
+        <Table>
+            <Row data={purchasesHeaderData}/>
+            <Rows data={purchasesRowData}/>
+        </Table>
+    );
+}
+
+const renderContent = ({purchases}) => (
+    <View>
+        <StandardPageDeliminator/>
+        {renderPurchasesTable(purchases)}
+    </View>
+);
+
+const renderHeader = (productVariant) => (
+    <View style={styles.detailsHeaderContainer}>
+        <Text>Products on Hand: {productVariant.productsOnHand}</Text>
+        <Text>Units per product: {productVariant.unitsPerProduct}</Text>
+        <Text style={styles.detailsHeaderText}>Purchase Details ▼</Text>
+    </View>
+);
+
+const renderSectionTitle = (productVariant) => (
+    <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>{productVariant.brand}</Text>
+    </View>
+);
 
 const styles = StyleSheet.create({
     titleContainer: {
@@ -84,3 +83,12 @@ const styles = StyleSheet.create({
         margin: 3
     }
 });
+
+
+export default AccordionDetails;
+export const forTesting = {
+    renderPurchasesTable,
+    renderContent,
+    renderHeader,
+    renderSectionTitle
+}
