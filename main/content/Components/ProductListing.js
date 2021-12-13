@@ -4,21 +4,9 @@ import { getProducts } from '../apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
 import { useAPI } from '../Hooks/useAPI';
 
+
 const ProductListing = () => {
   const [isLoading, products, error] = useAPI(getProducts);
-
-  const renderProduct = ({item}) => {
-    return (
-      <Link
-        style={styles.listingLinkItem}
-        to={{screen: 'Product Details', params: {itemId: item.id}}}
-        testID="listingProduct"
-      >
-        {item.name}
-      </Link>
-    );
-  };
-  const productKey = (product) => product.id.toString();
   
   if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID='loadComponent'/>;
   // TODO: Should not print error directly to screen!
@@ -37,6 +25,20 @@ const ProductListing = () => {
     </SafeAreaView>
   );
 };
+
+const renderProduct = ({item}) => {
+  return (
+    <Link
+      style={styles.listingLinkItem}
+      to={{screen: 'Product Details', params: {itemId: item.id}}}
+      testID="listingProduct"
+    >
+      {item.name}
+    </Link>
+  );
+};
+
+const productKey = (product) => product.id.toString();
 
 const styles = StyleSheet.create({
   container: {
@@ -73,3 +75,7 @@ const styles = StyleSheet.create({
 });
 
 export default ProductListing;
+export const forTesting = {
+  renderProduct,
+  productKey
+}
