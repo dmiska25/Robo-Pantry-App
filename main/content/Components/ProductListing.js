@@ -16,11 +16,15 @@ const ProductListing = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>My Pantry</Text>
       <View>
-        <FlatList
-          data={products}
-          renderItem={renderProduct}
-          keyExtractor={productKey}
-        />
+        {products == 0 ?
+          <Text style={styles.noItems}>NO PRODUCTS ☹{"\n"} Have some to add?</Text>
+          :
+          <FlatList
+            data={products}
+            renderItem={renderProduct}
+            keyExtractor={productKey}
+          />
+        }
       </View>
     </SafeAreaView>
   );
@@ -71,7 +75,12 @@ const styles = StyleSheet.create({
   loadingSymbol: {
     textAlign: 'center',
     marginTop: '20%'
-}
+  },
+  noItems: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 50
+  }
 });
 
 export default ProductListing;
