@@ -53,4 +53,13 @@ describe("ProductListing page", () => {
             })
         })
     })
+
+    describe("when 0 products are returned", () => {
+        beforeAll(() => {spy.mockReturnValue([false, [], null])});
+        afterAll(() => { spy.mockReset(); })
+        it("should display no items page", () => {
+            const { getByText } = render(<ProductListing/>);
+            const results = getByText(/NO PRODUCTS/i);
+        })
+    })
 })
