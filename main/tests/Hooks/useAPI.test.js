@@ -4,7 +4,12 @@ import { act } from "@testing-library/react-native";
 import axios from "axios";
 import { useAPI } from "../../content/Hooks/useAPI";
 
+jest.setTimeout(10000);
 jest.mock("axios");
+
+afterEach(() => {
+    axios.get.mockReset();
+})
 
 const mockData = {data: [{"test":"test"}]};
 
@@ -54,6 +59,51 @@ describe("fetch api data", () => {
             expect(result.current[0]).toEqual(false);
             expect(result.current[1]).toEqual(null);
             expect(result.current[2]).toEqual("Something went wrong!");
+        })
+    })
+
+    describe("reloadData", () => {
+        const getTestData = () => axios.get("/testEndpoint");
+        it("shouldn't load data if already loading", async () => {
+            axios.get.mockResolvedValue(
+                new Promise((resolve) => 
+                    setTimeout(() => resolve(mockData), 1000)
+                )
+            );
+            const { result, waitForNextUpdate } = renderHook(() => useAPI(getTestData));
+
+            const reload = result.current[3];
+            reload();
+
+            await act( async () => {
+                await waitForNextUpdate();
+            })
+
+            expect(axios.get).toHaveBeenCalledTimes(1);
+        })
+
+        it("should load data again if not already loading", async () => {
+            axios.get.mockResolvedValue(
+                new Promise((resolve) => 
+                    setTimeout(() => resolve(mockData), 1000)
+                )
+            );
+            const { result, waitForNextUpdate } = renderHook(() => useAPI(getTestData));
+
+            await act( async () => {
+                await waitForNextUpdate();
+            })
+
+            const reload = result.current[3];
+            act(() => {
+                reload();
+            });
+
+            await act( async () => {
+                await waitForNextUpdate();
+            })
+
+            expect(axios.get).toHaveBeenCalledTimes(2);
         })
     })
 })

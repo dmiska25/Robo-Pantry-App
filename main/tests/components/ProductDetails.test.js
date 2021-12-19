@@ -71,4 +71,13 @@ describe("ProductDetails page", () => {
             const accordion = getByText("Mocked Accordion");
         })
     })
+
+    describe("When an error occurs", () => {
+        beforeAll(() => {apiSpy.mockReturnValue([false, null, "error loading page"])});
+        afterAll(() => { apiSpy.mockReset(); })
+        it("should display error page", () => {
+            const {getByTestId} = render(<ProductDetails route={{params: {}}}/>);
+            const result = getByTestId("ApiError");
+        })
+    })
 })

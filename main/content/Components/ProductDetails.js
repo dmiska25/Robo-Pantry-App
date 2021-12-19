@@ -4,10 +4,11 @@ import { getProductById } from '../apiCalls/RoboPantryAPICalls';
 import { useAPI } from '../Hooks/useAPI';
 import AccordionDetails from './AccordionDetails';
 import StandardPageDeliminator from './StandardPageDeliminator';
+import ApiError from './ApiError';
 
 const ProductDetails = ({route}) => {
     const {itemId} = route.params;
-    const [isLoading, product, error] = useAPI(getProductById, itemId);
+    const [isLoading, product, error, reload] = useAPI(getProductById, itemId);
 
     // TODO: calculate last purchased on the backend
     const calculateLastPurchase = () => {
@@ -20,8 +21,7 @@ const ProductDetails = ({route}) => {
     }
 
     if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID="loadComponent"/>;
-    // TODO: Should not print error directly to screen!
-    if (error) return <Text>{error}</Text>
+    if(error) return <ApiError message={error} reload={reload}/>;
 
     return (
         <SafeAreaView style={styles.container}>
