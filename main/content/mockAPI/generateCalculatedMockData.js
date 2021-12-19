@@ -4,7 +4,7 @@ const rand = datatype.number;
 
 const generateCalculatedMockData = () => {
     const calculatedData = [];
-    const NUMBER_OF_PRODUCTS = 10;
+    const NUMBER_OF_PRODUCTS = 20;
 
     // for each product
     for (let i=0; i<NUMBER_OF_PRODUCTS; i++) {
