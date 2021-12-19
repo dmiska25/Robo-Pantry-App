@@ -3,14 +3,13 @@ import { FlatList, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } fro
 import { getProducts } from '../apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
 import { useAPI } from '../Hooks/useAPI';
-
+import ApiError from './ApiError';
 
 const ProductListing = () => {
-  const [isLoading, products, error] = useAPI(getProducts);
-  
+  var [isLoading, products, error, reload] = useAPI(getProducts);
+
   if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID='loadComponent'/>;
-  // TODO: Should not print error directly to screen!
-  if(error) return <Text>{error}</Text>;
+  if(error) return <ApiError message={error} reload={reload}/>;
 
   return (
     <SafeAreaView style={styles.container}>

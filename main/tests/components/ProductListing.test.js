@@ -54,6 +54,15 @@ describe("ProductListing page", () => {
         })
     })
 
+    describe("when error is not null", () => {
+        beforeAll(() => {spy.mockReturnValue([false, null, "error loading page"])});
+        afterAll(() => { spy.mockReset(); })
+        it("should display error page", () => {
+            const {getByTestId} = render(<ProductListing/>);
+            const result = getByTestId("ApiError");
+        })
+    })
+
     describe("when 0 products are returned", () => {
         beforeAll(() => {spy.mockReturnValue([false, [], null])});
         afterAll(() => { spy.mockReset(); })

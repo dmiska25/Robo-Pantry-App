@@ -6,18 +6,27 @@ export const useAPI = (apiFunction, params) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    const loadData = () => {
         apiFunction(params)
-            .then(({data}) => {
-                setData(data);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                setError("Something went wrong!");
-                setIsLoading(false);
-                console.log(err);
-            });
+        .then(({data}) => {
+            setData(data);
+            setIsLoading(false);
+        })
+        .catch((err) => {
+            setError("Something went wrong!");
+            setIsLoading(false);
+            console.log(err);
+        });
+    }
+    const reloadData = () => {
+        if (isLoading==true) return;
+        setIsLoading(true);
+        loadData();
+    }
+
+    useEffect(() => {
+        loadData();
     }, [apiFunction, params]);
 
-    return [isLoading, data, error];
+    return [isLoading, data, error, reloadData];
 };
