@@ -14,7 +14,7 @@ const ProductListing = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>My Pantry</Text>
-      <View>
+      <View style={styles.listingContainer}>
         {products == 0 ?
           <Text style={styles.noItems}>NO PRODUCTS ☹{"\n"} Have some to add?</Text>
           :
@@ -70,6 +70,9 @@ const styles = StyleSheet.create({
     color: 'blue',
     justifyContent: 'center',
     color: 'black'
+  },
+  listingContainer: {
+    flex: 1
   },
   loadingSymbol: {
     textAlign: 'center',
