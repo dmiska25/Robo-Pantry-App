@@ -1,31 +1,35 @@
 import { commerce, company, datatype, date, random } from "faker";
-import { belongsTo, createServer, Factory, hasMany, Model, RestSerializer } from "miragejs";
-import { getProduct, getProducts } from '../constants/mockProductData';
+import { belongsTo, createServer, Factory, hasMany, Model, Response, RestSerializer } from "miragejs";
 import { getUnitsOfMeasure } from "../constants/unitsOfMeasure";
 import generateCalculatedMockData from "./generateCalculatedMockData";
 
 // valid mockData values: seed, default
 
 
-export function startMockAPIServer({ environment = "development", mockData = "seed" } = {}) { 
+export function startMockAPIServer({ environment = "development" } = {}) { 
     console.log("Mock API Server starting!");
     return createServer({
         environment: environment,
         namespace: "/robo-pantry",
         routes() {
             this.get("/products", (schema) => {
-                switch (mockData) {
-                    case "seed": return schema.products.all();
-                    default: return getProducts();
-                }
+                return schema.products.all();
             });
 
             this.get("/products/:id", (schema, request) => {
                 let id = request.params.id;
-                switch (mockData) {
-                    case "seed": return schema.products.findBy({id: id});
-                    default: return getProduct(id);
-                }
+                return schema.products.findBy({id: id});
+            });
+
+            this.post("/products", (schema, request) => {
+                const {product, product_variant, purchase} = 
+                    JSON.parse(request.requestBody);
+
+                const createdProduct = schema.products.create(product);
+                const createdProductVariant = schema.productVariants.create(Object.assign(product_variant, {product: createdProduct}));
+                const createdPurchase = schema.purchases.create(Object.assign(purchase, {productVariant: createdProductVariant}));
+
+                return schema.products.findBy({id: product.id});
             });
         },
         models: {

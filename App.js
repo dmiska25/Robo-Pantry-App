@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 if (window.server) {
     server.shutdown();
 }
-window.server = startMockAPIServer();
+window.server = startMockAPIServer({environment: "production"});
 
 const App = () => (
     <NavigationContainer>
