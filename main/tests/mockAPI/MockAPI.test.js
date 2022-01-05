@@ -1,85 +1,66 @@
 // MockAPI.test.js
 import { startMockAPIServer } from "../../content/mockAPI/MockAPI"
 import axios from "axios"
-import * as mockData from "../../content/constants/mockProductData";
 
 // initiate test server
 let server;
 
 beforeEach(() => {
-  // setting mockData to default allows to mock getProduct and getProducts
-  server = startMockAPIServer({environment: "test", mockData: "default"});
+  server = startMockAPIServer({environment: "test"});
 })
 
 afterEach(() => {
   server.shutdown();
 })
 
-// mocking the mock data :)
-const productsMock = [
-  {
-    id: 1,
-    name: "Root Beer",
-    unitsOnHand: 64.0,
-    unitOfMeasure: "oz"
-  },
-  {
-    id: 8,
-    name: "Milk",
-    unitsOnHand: 64.0,
-    unitOfMeasure: "oz"
-  }
-];
-
-const productMock = {
-  id: 10,
-  name: 'Banana',
-  unitsOnHand: 7,
-  unitOfMeasure: 'unit',
-  productVariants: [
-    {
-      id: 2,
-      brand: 'Dole',
-      productsOnHand: 7,
-      unitsPerProduct: 1,
-      purchases: [
-        {
-          id: 3,
-          purchaseDate: new Date(2021, 8, 19),
-          productsPurchased: 7
-        }
-      ],
-      barcode: 45634256
-    }
-  ]
-}
-
-const productsExpected = JSON.parse(JSON.stringify(productsMock));
-const productExpected = JSON.parse(JSON.stringify(productMock));
-
-
 describe("MockAPI", () => {
   it("shows products from mocking data", async () => {
-    const spy = jest.spyOn(mockData, 'getProducts');
-    spy.mockReturnValue(productsMock);
+    server.create("product", {id:1, unitsOnHand: 10});
+    server.create("product", {id:2, unitsOnHand: 12});
 
-    let data;
+    var data;
     await axios
         .get("/robo-pantry/products")
-        .then((res) => data = res.data)
+        .then((res) => data = res.data.products)
         .catch((err) => console.log(err));
-    expect(data).toEqual(productsExpected);
+    expect(data.length).toEqual(2);
+    expect(data.filter(e => e.id === '1').length).toEqual(1);
+    expect(data.filter(e => e.id === '2').length).toEqual(1);
   })
 
   it("shows a products details from mocking data", async () => {
-    const spy = jest.spyOn(mockData, 'getProduct');
-    spy.mockReturnValue(productMock);
+    const product = server.create("product", {id:1, unitsOnHand: 10});
+    const variant = server.create("productVariant", {id: 2, product: product});
+    const purchase = server.create("purchase", {id:3, productVariant: variant});
     
-    let data;
+    var data;
     await axios
-        .get("/robo-pantry/products/9")
-        .then((res) => data = res.data)
+        .get("/robo-pantry/products/1")
+        .then((res) => data = res.data.product)
         .catch((err) => console.log(err));
-    expect(data).toEqual(productExpected);
+       
+    expect(data.id).toEqual('1');
+    expect(data.productVariants[0].id).toEqual('2');
+    expect(data.productVariants[0].purchases[0].id).toEqual('3');
+  })
+
+  it("creates a product and its children on a request", async () => {
+    var data;
+
+    // reform mock data to request data
+    var mockRequest = {
+      product: {id:'1'},
+      product_variant: {id:'2'},
+      purchase: {id:'3'}
+    }
+
+    await axios
+      .post("/robo-pantry/products", mockRequest)
+      .then((res) => data = res.data.product)
+      .catch((err) => console.log(err));
+
+      expect(data.id).toEqual('1');
+      expect(data.productVariants[0].id).toEqual('2');
+      expect(data.productVariants[0].purchases[0].id).toEqual('3');
   })
 })
