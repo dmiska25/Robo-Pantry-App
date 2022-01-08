@@ -2,7 +2,7 @@
 import { renderHook } from "@testing-library/react-hooks";
 import { act } from "@testing-library/react-native";
 import axios from "axios";
-import { useAPI } from "../../content/Hooks/useAPI";
+import { useAPI } from '../../../content/api/Hooks/useAPI';
 
 jest.setTimeout(10000);
 jest.mock("axios");

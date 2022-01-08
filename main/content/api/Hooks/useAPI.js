@@ -10,6 +10,8 @@ export const useAPI = (apiFunction, params) => {
         apiFunction(params)
         .then(({data}) => {
             setData(data);
+            console.log("data: ");
+            console.log(data);
             setIsLoading(false);
         })
         .catch((err) => {
