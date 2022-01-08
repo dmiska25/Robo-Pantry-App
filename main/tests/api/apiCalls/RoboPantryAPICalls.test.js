@@ -1,7 +1,8 @@
-import { getProductById, getProducts, exportedForTesting } from "../../content/apiCalls/RoboPantryAPICalls";
 import axios from "axios";
-import * as uom from "../../content/helpers/unitOfMeasureHelpers";
-import { getUnitsOfMeasure } from "../../content/constants/unitsOfMeasure";
+import * as uom from "../../../content/helpers/unitOfMeasureHelpers";
+import { getUnitsOfMeasure } from "../../../content/constants/unitsOfMeasure";
+import { getProductById, getProducts, postEmbeddedProduct, exportedForTesting } from "../../../content/api/apiCalls/RoboPantryAPICalls";
+import { ValidationError } from "yup";
 const { parseKeyValue } = exportedForTesting;
 
 jest.mock("axios");
@@ -40,6 +41,43 @@ describe("getProductsById", () => {
             expect(() => {
                 getProductById();
             }).toThrow(TypeError);
+        })
+    })
+})
+
+describe("postEmbeddedProduct", () => {
+    let embeddedProductMock = {
+        product: {
+            product_name: "Root Beer",
+            category: "Beverage",
+            unit_of_measure: "oz"
+        },
+        product_variant: {
+            brand: "A&W",
+            units_per_product: "8",
+            barcode: 76982361
+        },
+        purchase: {
+            purchase_date: Date(),
+            products_purchased: 2
+        }
+    };
+
+    describe("With valid embedded object", () => {
+        it("should return created/modified object back", () => {
+            postEmbeddedProduct(embeddedProductMock);
+            expect(axios.post).toHaveBeenCalledWith("/robo-pantry/products", embeddedProductMock, expect.objectContaining({
+                transformResponse: expect.any(Function)
+            }));
+        })
+    })
+
+    describe("With invalid embedded object", () => {
+        it("should throw an exception", () => {
+            let invalidEmbeddedProductMock = delete embeddedProductMock.product.product_name;
+            expect(() => {
+                postEmbeddedProduct(invalidEmbeddedProductMock);
+            }).toThrow(ValidationError);
         })
     })
 })

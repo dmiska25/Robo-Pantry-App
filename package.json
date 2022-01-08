@@ -24,13 +24,14 @@
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",
     "react-native-table-component": "^1.2.1",
-    "react-native-web": "^0.17.5"
+    "react-native-web": "^0.17.5",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "jest-expo": "^43.0.1",
     "@testing-library/jest-native": "^4.0.4",
     "@testing-library/react-native": "^8.0.0",
+    "jest-expo": "^43.0.1",
     "miragejs": "^0.1.42",
     "react-hooks-testing-library": "^0.6.0",
     "react-test-renderer": "^17.0.2",

@@ -1,8 +1,8 @@
 import React from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { getProducts } from '../apiCalls/RoboPantryAPICalls';
+import { getProducts } from '../api/apiCalls/RoboPantryAPICalls';
 import { Link } from '@react-navigation/native';
-import { useAPI } from '../Hooks/useAPI';
+import { useAPI } from '../api/Hooks/useAPI';
 import ApiError from './ApiError';
 
 const ProductListing = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
-import { getProductById } from '../apiCalls/RoboPantryAPICalls';
-import { useAPI } from '../Hooks/useAPI';
+import { getProductById } from '../api/apiCalls/RoboPantryAPICalls';
+import { useAPI } from '../api/Hooks/useAPI';
 import AccordionDetails from './AccordionDetails';
 import StandardPageDeliminator from './StandardPageDeliminator';
 import ApiError from './ApiError';
@@ -21,7 +21,7 @@ const ProductDetails = ({route}) => {
     }
 
     if (isLoading) return <ActivityIndicator style={styles.loadingSymbol} size="large" color="#00ff00" testID="loadComponent"/>;
-    if(error) return <ApiError message={error} reload={reload}/>;
+    if(error || !product) return <ApiError message={error} reload={reload}/>;
 
     return (
         <SafeAreaView style={styles.container}>

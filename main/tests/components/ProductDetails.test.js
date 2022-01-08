@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from 'react-native';
 import { render } from "@testing-library/react-native";
 import ProductDetails from "../../content/Components/ProductDetails";
-import * as api from '../../content/Hooks/useAPI';
+import * as api from '../../content/api/Hooks/useAPI';
 import { getUnitsOfMeasure } from "../../content/constants/unitsOfMeasure";
 
 const apiSpy = jest.spyOn(api, 'useAPI');

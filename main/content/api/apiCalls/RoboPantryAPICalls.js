@@ -1,6 +1,7 @@
 // ./src/api.js
 import axios from 'axios';
-import { getUnitOfMeasureFromJson } from '../helpers/unitOfMeasureHelpers';
+import { getUnitOfMeasureFromJson } from '../../helpers/unitOfMeasureHelpers';
+import embeddedProductSchema from '../objectValidation/embeddedProductValidate';
 
 const BASE_URL = "/robo-pantry";
 
@@ -17,6 +18,14 @@ export const getProductById = (id) => {
     const url = `${BASE_URL}/products/${id}`;
     return axios.get(url, {
         transformResponse: (res) => detailsDeserialize(res)
+    });
+};
+
+export const postEmbeddedProduct = (embeddedProduct) => {
+    embeddedProductSchema.validateSync(embeddedProduct);
+    const url = `${BASE_URL}/products`;
+    return axios.post(url, embeddedProduct, {
+        transformResponse: (res) => stdDeserialize(res)
     });
 };
 
