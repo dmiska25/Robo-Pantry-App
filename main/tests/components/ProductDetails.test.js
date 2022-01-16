@@ -4,6 +4,7 @@ import { render } from "@testing-library/react-native";
 import ProductDetails from "../../content/Components/ProductDetails";
 import * as api from '../../content/api/Hooks/useAPI';
 import { getUnitsOfMeasure } from "../../content/constants/unitsOfMeasure";
+import { getProductCategories } from "../../content/constants/productCategory";
 
 const apiSpy = jest.spyOn(api, 'useAPI');
 const accordionMocking = () => <Text>Mocked Accordion</Text>;
@@ -24,6 +25,7 @@ describe("ProductDetails page", () => {
         const productMock = {
             id: 10,
             name: 'Banana',
+            category: getProductCategories().PRODUCE,
             unitsOnHand: 7,
             unitOfMeasure: getUnitsOfMeasure().UNIT,
             productVariants: [

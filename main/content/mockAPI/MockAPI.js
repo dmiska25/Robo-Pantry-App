@@ -1,7 +1,9 @@
 import { commerce, company, datatype, date, random } from "faker";
 import { belongsTo, createServer, Factory, hasMany, Model, Response, RestSerializer } from "miragejs";
 import { getUnitsOfMeasure } from "../constants/unitsOfMeasure";
+import ApplicationSerializer from "./ApplicationSerializer";
 import generateCalculatedMockData from "./generateCalculatedMockData";
+import { getProductCategories } from "../constants/productCategory";
 
 // valid mockData values: seed, default
 
@@ -45,18 +47,20 @@ export function startMockAPIServer({ environment = "development" } = {}) {
             })
         },
         serializers: {
-            product: RestSerializer.extend({
+            product: ApplicationSerializer.extend({
                 include: ["productVariants"],
                 embed: true,
             }),
-            productVariant: RestSerializer.extend({
+            productVariant: ApplicationSerializer.extend({
                 include: ["purchases"],
                 embed: true,
             }),
+            application: ApplicationSerializer
         },
         factories: {
             product: Factory.extend({
                 name() {return commerce.productName()},
+                category() {return random.arrayElement(Object.values(getProductCategories())).json},
                 unitsOnHand: datatype.number({min: 4, max: 200}),
                 unitOfMeasure() {return random.arrayElement(Object.values(getUnitsOfMeasure())).json}
             }),

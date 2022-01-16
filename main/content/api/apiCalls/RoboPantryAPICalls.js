@@ -1,6 +1,6 @@
 // ./src/api.js
 import axios from 'axios';
-import { getUnitOfMeasureFromJson } from '../../helpers/unitOfMeasureHelpers';
+import { getProductCategoryFromJson, getUnitOfMeasureFromJson } from '../../helpers/deserializationHelpers';
 import embeddedProductSchema from '../objectValidation/embeddedProductValidate';
 
 const BASE_URL = "/robo-pantry";
@@ -43,8 +43,8 @@ const detailsDeserialize = (res) => {
 
 const parseKeyValue = (key, value) => {
     switch(key) {
-        case 'id': return parseInt(value);   // TODO: have miraje return an int!
         case 'unitOfMeasure': return getUnitOfMeasureFromJson(value);
+        case 'category': return getProductCategoryFromJson(value);
         case 'purchaseDate': return new Date(value);
         default: return value;
     }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as uom from "../../../content/helpers/unitOfMeasureHelpers";
+import * as uom from "../../../content/helpers/deserializationHelpers";
 import { getUnitsOfMeasure } from "../../../content/constants/unitsOfMeasure";
 import { getProductById, getProducts, postEmbeddedProduct, exportedForTesting } from "../../../content/api/apiCalls/RoboPantryAPICalls";
 import { ValidationError } from "yup";
