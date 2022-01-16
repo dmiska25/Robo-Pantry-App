@@ -9,8 +9,24 @@ function convertIdsToNumbers(o) {
       }
     })
 }
+
+const underscore = str => {
+
+  const regex1 = (/([a-z\d])([A-Z]+)/g)
+  const regex2 = (/\-|\s+/g)
+
+  return str.replace(regex1, '$1_$2')
+    .replace(regex2, '_')
+    .toLowerCase()
+}
   
 export default ApplicationSerializer = RestSerializer.extend({
+    keyForAttribute(attr) {
+      return underscore(attr);
+    },
+    keyForEmbeddedRelationship(attr) {
+      return underscore(attr);
+    },
     serialize() {
         let json = Serializer.prototype.serialize.apply(this, arguments);
         convertIdsToNumbers(json);

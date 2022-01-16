@@ -26,7 +26,7 @@ describe("MockAPI", () => {
     expect(data.filter(e => e.id === 1).length).toEqual(1);
     expect(data.filter(e => e.id === 2).length).toEqual(1);
   })
- 
+
   it("shows a products details from mocking data", async () => {
     const product = server.create("product", {id:1, unitsOnHand: 10});
     const variant = server.create("productVariant", {id: 2, product: product});
@@ -39,8 +39,8 @@ describe("MockAPI", () => {
         .catch((err) => console.log(err));
        
     expect(data.id).toEqual(1);
-    expect(data.productVariants[0].id).toEqual(2);
-    expect(data.productVariants[0].purchases[0].id).toEqual(3);
+    expect(data.product_variants[0].id).toEqual(2);
+    expect(data.product_variants[0].purchases[0].id).toEqual(3);
   })
 
   it("creates a product and its children on a request", async () => {
@@ -59,7 +59,7 @@ describe("MockAPI", () => {
       .catch((err) => console.log(err));
 
       expect(data.id).toEqual(1);
-      expect(data.productVariants[0].id).toEqual(2);
-      expect(data.productVariants[0].purchases[0].id).toEqual(3);
+      expect(data.product_variants[0].id).toEqual(2);
+      expect(data.product_variants[0].purchases[0].id).toEqual(3);
   })
 })
