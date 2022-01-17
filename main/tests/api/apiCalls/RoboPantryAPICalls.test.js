@@ -1,9 +1,6 @@
 import axios from "axios";
-import * as uom from "../../../content/helpers/unitOfMeasureHelpers";
-import { getUnitsOfMeasure } from "../../../content/constants/unitsOfMeasure";
-import { getProductById, getProducts, postEmbeddedProduct, exportedForTesting } from "../../../content/api/apiCalls/RoboPantryAPICalls";
+import { getProductById, getProducts, postEmbeddedProduct } from "../../../content/api/apiCalls/RoboPantryAPICalls";
 import { ValidationError } from "yup";
-const { parseKeyValue } = exportedForTesting;
 
 jest.mock("axios");
 
@@ -11,7 +8,7 @@ describe("getProducts", () => {
     describe("on call", () => {
         it("should return call to baseUrl/products", () => {
             getProducts();
-            expect(axios.get).toHaveBeenCalledWith("/robo-pantry/products", expect.objectContaining({
+            expect(axios.get).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products", expect.objectContaining({
                 transformResponse: expect.any(Function)
             }));
         })
@@ -22,7 +19,7 @@ describe("getProductsById", () => {
     describe("with valid id", () => {
         it("should return call to baseUrl/products/:id", () => {
             getProductById(10);
-            expect(axios.get).toHaveBeenCalledWith("/robo-pantry/products/10", expect.objectContaining({
+            expect(axios.get).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products/10", expect.objectContaining({
                 transformResponse: expect.any(Function)
             }));
         })
@@ -66,9 +63,7 @@ describe("postEmbeddedProduct", () => {
     describe("With valid embedded object", () => {
         it("should return created/modified object back", () => {
             postEmbeddedProduct(embeddedProductMock);
-            expect(axios.post).toHaveBeenCalledWith("/robo-pantry/products", embeddedProductMock, expect.objectContaining({
-                transformResponse: expect.any(Function)
-            }));
+            expect(axios.post).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products", embeddedProductMock);
         })
     })
 
@@ -78,38 +73,6 @@ describe("postEmbeddedProduct", () => {
             expect(() => {
                 postEmbeddedProduct(invalidEmbeddedProductMock);
             }).toThrow(ValidationError);
-        })
-    })
-})
-
-describe("parseKeyValue", () => {
-    describe("with key: 'unitOfMeasure'", () => {
-        it("should convert to UnitOfMeasure", () => {
-            const spy = jest.spyOn(uom, 'getUnitOfMeasureFromJson');
-            spy.mockReturnValue(getUnitsOfMeasure().OUNCE);
-
-            const result = parseKeyValue('unitOfMeasure', 'oz');
-            expect(spy).toHaveBeenCalledWith('oz');
-            expect(result).toBe(getUnitsOfMeasure().OUNCE)
-        })
-    })
-
-    describe("with key: 'purchaseDate'", () => {
-        it("should convert to Date", () => {
-            const testDate = new Date();
-            const testDateString = testDate.toISOString();
-
-            const result = parseKeyValue('purchaseDate', testDateString);
-            expect(result.toISOString()).toBe(testDate.toISOString());
-        })
-    })
-
-    describe("with any other key", () => {
-        it("should return the value", () => {
-            const testValue = 10;
-
-            const result = parseKeyValue('int', testValue);
-            expect(result).toBe(testValue);
         })
     })
 })

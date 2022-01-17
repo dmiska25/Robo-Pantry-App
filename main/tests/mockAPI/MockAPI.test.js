@@ -12,7 +12,6 @@ beforeEach(() => {
 afterEach(() => {
   server.shutdown();
 })
-
 describe("MockAPI", () => {
   it("shows products from mocking data", async () => {
     server.create("product", {id:1, unitsOnHand: 10});
@@ -20,12 +19,12 @@ describe("MockAPI", () => {
 
     var data;
     await axios
-        .get("/robo-pantry/products")
+        .get("http://172.16.4.51:8080/robo-pantry/products")
         .then((res) => data = res.data.products)
         .catch((err) => console.log(err));
     expect(data.length).toEqual(2);
-    expect(data.filter(e => e.id === '1').length).toEqual(1);
-    expect(data.filter(e => e.id === '2').length).toEqual(1);
+    expect(data.filter(e => e.id === 1).length).toEqual(1);
+    expect(data.filter(e => e.id === 2).length).toEqual(1);
   })
 
   it("shows a products details from mocking data", async () => {
@@ -35,13 +34,13 @@ describe("MockAPI", () => {
     
     var data;
     await axios
-        .get("/robo-pantry/products/1")
+        .get("http://172.16.4.51:8080/robo-pantry/products/1")
         .then((res) => data = res.data.product)
         .catch((err) => console.log(err));
        
-    expect(data.id).toEqual('1');
-    expect(data.productVariants[0].id).toEqual('2');
-    expect(data.productVariants[0].purchases[0].id).toEqual('3');
+    expect(data.id).toEqual(1);
+    expect(data.product_variants[0].id).toEqual(2);
+    expect(data.product_variants[0].purchases[0].id).toEqual(3);
   })
 
   it("creates a product and its children on a request", async () => {
@@ -55,12 +54,12 @@ describe("MockAPI", () => {
     }
 
     await axios
-      .post("/robo-pantry/products", mockRequest)
+      .post("http://172.16.4.51:8080/robo-pantry/products", mockRequest)
       .then((res) => data = res.data.product)
       .catch((err) => console.log(err));
 
-      expect(data.id).toEqual('1');
-      expect(data.productVariants[0].id).toEqual('2');
-      expect(data.productVariants[0].purchases[0].id).toEqual('3');
+      expect(data.id).toEqual(1);
+      expect(data.product_variants[0].id).toEqual(2);
+      expect(data.product_variants[0].purchases[0].id).toEqual(3);
   })
 })

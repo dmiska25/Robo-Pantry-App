@@ -1,4 +1,4 @@
-import { getUnitOfMeasureFromJson } from "../../content/helpers/unitOfMeasureHelpers";
+import { getUnitOfMeasureFromJson } from "../../content/helpers/deserializationHelpers";
 import * as UOM from "../../content/constants/unitsOfMeasure";
 import { StateError } from "../../content/errors/stateError";
 

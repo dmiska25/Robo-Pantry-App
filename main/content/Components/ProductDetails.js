@@ -31,6 +31,7 @@ const ProductDetails = ({route}) => {
             <StandardPageDeliminator/>
             <View style={styles.productDetails}>
                 <Text style={styles.subtitle}>Details</Text>
+                <Text>Product Category: {product.category.long}</Text>
                 <Text>Units on Hand: {product.unitsOnHand} {product.unitOfMeasure.plural}</Text>
                 <Text>Last Purchased: {calculateLastPurchase()}</Text>
             </View>

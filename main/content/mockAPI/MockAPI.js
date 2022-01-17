@@ -1,15 +1,15 @@
 import { commerce, company, datatype, date, random } from "faker";
 import { belongsTo, createServer, Factory, hasMany, Model, Response, RestSerializer } from "miragejs";
 import { getUnitsOfMeasure } from "../constants/unitsOfMeasure";
+import ApplicationSerializer from "./ApplicationSerializer";
 import generateCalculatedMockData from "./generateCalculatedMockData";
-
-// valid mockData values: seed, default
-
+import { getProductCategories } from "../constants/productCategory";
 
 export function startMockAPIServer({ environment = "development" } = {}) { 
     console.log("Mock API Server starting!");
     return createServer({
         environment: environment,
+        urlPrefix: "http://172.16.4.51:8080",
         namespace: "/robo-pantry",
         routes() {
             this.get("/products", (schema) => {
@@ -45,18 +45,20 @@ export function startMockAPIServer({ environment = "development" } = {}) {
             })
         },
         serializers: {
-            product: RestSerializer.extend({
+            product: ApplicationSerializer.extend({
                 include: ["productVariants"],
                 embed: true,
             }),
-            productVariant: RestSerializer.extend({
+            productVariant: ApplicationSerializer.extend({
                 include: ["purchases"],
                 embed: true,
             }),
+            application: ApplicationSerializer
         },
         factories: {
             product: Factory.extend({
                 name() {return commerce.productName()},
+                category() {return random.arrayElement(Object.values(getProductCategories())).json},
                 unitsOnHand: datatype.number({min: 4, max: 200}),
                 unitOfMeasure() {return random.arrayElement(Object.values(getUnitsOfMeasure())).json}
             }),
