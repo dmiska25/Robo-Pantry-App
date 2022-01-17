@@ -19,7 +19,7 @@ describe("MockAPI", () => {
 
     var data;
     await axios
-        .get("/robo-pantry/products")
+        .get("http://172.16.4.51:8080/robo-pantry/products")
         .then((res) => data = res.data.products)
         .catch((err) => console.log(err));
     expect(data.length).toEqual(2);
@@ -34,7 +34,7 @@ describe("MockAPI", () => {
     
     var data;
     await axios
-        .get("/robo-pantry/products/1")
+        .get("http://172.16.4.51:8080/robo-pantry/products/1")
         .then((res) => data = res.data.product)
         .catch((err) => console.log(err));
        
@@ -54,7 +54,7 @@ describe("MockAPI", () => {
     }
 
     await axios
-      .post("/robo-pantry/products", mockRequest)
+      .post("http://172.16.4.51:8080/robo-pantry/products", mockRequest)
       .then((res) => data = res.data.product)
       .catch((err) => console.log(err));
 

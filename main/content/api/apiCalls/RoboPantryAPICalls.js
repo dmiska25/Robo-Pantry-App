@@ -3,9 +3,8 @@ import axios from 'axios';
 import embeddedProductSchema from '../objectValidation/post/embeddedProductValidate';
 import { productsWrapper } from '../objectValidation/get/productsWrapperValidate';
 import { productWrapper } from '../objectValidation/get/productWrapperValidate';
-import { productDetails } from '../objectValidation/get/productValidate';
 
-const BASE_URL = "/robo-pantry";
+const BASE_URL = "http://172.16.4.51:8080/robo-pantry";
 
 // api calls
 

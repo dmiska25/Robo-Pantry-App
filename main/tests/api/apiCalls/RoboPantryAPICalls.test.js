@@ -8,7 +8,7 @@ describe("getProducts", () => {
     describe("on call", () => {
         it("should return call to baseUrl/products", () => {
             getProducts();
-            expect(axios.get).toHaveBeenCalledWith("/robo-pantry/products", expect.objectContaining({
+            expect(axios.get).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products", expect.objectContaining({
                 transformResponse: expect.any(Function)
             }));
         })
@@ -19,7 +19,7 @@ describe("getProductsById", () => {
     describe("with valid id", () => {
         it("should return call to baseUrl/products/:id", () => {
             getProductById(10);
-            expect(axios.get).toHaveBeenCalledWith("/robo-pantry/products/10", expect.objectContaining({
+            expect(axios.get).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products/10", expect.objectContaining({
                 transformResponse: expect.any(Function)
             }));
         })
@@ -63,7 +63,7 @@ describe("postEmbeddedProduct", () => {
     describe("With valid embedded object", () => {
         it("should return created/modified object back", () => {
             postEmbeddedProduct(embeddedProductMock);
-            expect(axios.post).toHaveBeenCalledWith("/robo-pantry/products", embeddedProductMock);
+            expect(axios.post).toHaveBeenCalledWith("http://172.16.4.51:8080/robo-pantry/products", embeddedProductMock);
         })
     })
 

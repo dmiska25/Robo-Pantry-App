@@ -5,13 +5,11 @@ import ApplicationSerializer from "./ApplicationSerializer";
 import generateCalculatedMockData from "./generateCalculatedMockData";
 import { getProductCategories } from "../constants/productCategory";
 
-// valid mockData values: seed, default
-
-
 export function startMockAPIServer({ environment = "development" } = {}) { 
     console.log("Mock API Server starting!");
     return createServer({
         environment: environment,
+        urlPrefix: "http://172.16.4.51:8080",
         namespace: "/robo-pantry",
         routes() {
             this.get("/products", (schema) => {
