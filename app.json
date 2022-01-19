@@ -27,6 +27,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "sentry-expo"
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "DylanJMiska",
+            "project": "RoboPantryApp",
+            "authToken": "8e9e7a33f9de41ce832812f49a9f27b839a52634c6b24c538ff994bb082b2c2f"
+          }
+        }
+      ]
     }
   }
 }
