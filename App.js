@@ -4,17 +4,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { startMockAPIServer } from "./main/content/mockAPI/MockAPI";
 import ProductListing from "./main/content/Components/ProductListing";
 import ProductDetails from "./main/content/Components/ProductDetails";
-import { LogBox, Text } from "react-native";
+import { LogBox } from "react-native";
 import * as Sentry from "sentry-expo";
 import { ErrorBoundary } from "@sentry/react";
 import FallbackError from "./main/content/Components/FallbackError";
+import { SENTRY_DNS } from "@env";
 
 // TODO: Figure out root cause of this issue
 LogBox.ignoreLogs(["Overwriting fontFamily", "Constants.deviceYearClass"]);
 
 // sentry logging
 Sentry.init({
-  dsn: "https://cd732409b78a4454b2c56793a50c4410@o1119110.ingest.sentry.io/6153383",
+  dsn: `${SENTRY_DNS}`,
   enableInExpoDevelopment: true,
   debug: true,
   tracesSampleRate: 0.01,
