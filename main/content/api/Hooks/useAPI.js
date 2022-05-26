@@ -2,12 +2,19 @@
 import { useState, useEffect } from "react";
 import * as Sentry from "sentry-expo";
 
-export const useAPI = (apiFunction, params) => {
+export const useAPI = (
+  apiFunction,
+  params,
+  { conditional = () => false } = {}
+) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const loadData = () => {
+    setError(null);
+    if (conditional && conditional(params)) return;
+    setIsLoading(true);
     apiFunction(params)
       .then(({ data }) => {
         setData(data);
@@ -22,7 +29,6 @@ export const useAPI = (apiFunction, params) => {
   };
   const reloadData = () => {
     if (isLoading == true) return;
-    setIsLoading(true);
     loadData();
   };
 

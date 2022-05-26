@@ -9,6 +9,7 @@ import * as Sentry from "sentry-expo";
 import { ErrorBoundary } from "@sentry/react";
 import FallbackError from "./main/content/Components/FallbackError";
 import { SENTRY_DNS } from "@env";
+import NewPurchaseForm from "./main/content/Components/NewPurchase";
 
 // TODO: Figure out root cause of this issue
 LogBox.ignoreLogs(["Overwriting fontFamily", "Constants.deviceYearClass"]);
@@ -35,6 +36,7 @@ const App = () => (
       <Stack.Navigator>
         <Stack.Screen name="Product Listing" component={ProductListing} />
         <Stack.Screen name="Product Details" component={ProductDetails} />
+        <Stack.Screen name="New Purchase" component={NewPurchaseForm} />
       </Stack.Navigator>
     </NavigationContainer>
   </ErrorBoundary>

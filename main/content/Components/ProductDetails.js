@@ -11,8 +11,9 @@ import { useAPI } from "../api/Hooks/useAPI";
 import AccordionDetails from "./AccordionDetails";
 import StandardPageDeliminator from "./StandardPageDeliminator";
 import FallbackError from "./FallbackError";
+import AddElementButton from "./AddElementButton";
 
-const ProductDetails = ({ route }) => {
+const ProductDetails = ({ route, navigation }) => {
   const { itemId } = route.params;
   const [isLoading, product, error, reload] = useAPI(getProductById, itemId);
 
@@ -59,6 +60,7 @@ const ProductDetails = ({ route }) => {
         <Text style={styles.subtitle}>On Hand</Text>
         <AccordionDetails sectionData={product.productVariants} />
       </View>
+      <AddElementButton location="New Purchase" navigation={navigation} />
     </SafeAreaView>
   );
 };

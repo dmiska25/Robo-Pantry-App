@@ -55,6 +55,52 @@ describe("fetch api data", () => {
     });
   });
 
+  describe("conditional", () => {
+    beforeEach(() => {
+      axios.get.mockResolvedValueOnce(mockData);
+    });
+    const getTestDataWithParams = (testId) =>
+      axios.get(`/testEndpoint/${testId}`);
+
+    describe("when true", () => {
+      it("should skip api call", () => {
+        renderHook(() =>
+          useAPI(getTestDataWithParams, 5, { conditional: () => true })
+        );
+
+        expect(axios.get).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe("when false", () => {
+      it("execute api call", async () => {
+        const { waitForNextUpdate } = renderHook(() =>
+          useAPI(getTestDataWithParams, 5, { conditional: () => false })
+        );
+
+        await act(async () => {
+          await waitForNextUpdate();
+        });
+
+        expect(axios.get).toHaveBeenCalledWith("/testEndpoint/5");
+      });
+    });
+
+    describe("when not passed", () => {
+      it("execute api call", async () => {
+        const { waitForNextUpdate } = renderHook(() =>
+          useAPI(getTestDataWithParams, 5)
+        );
+
+        await act(async () => {
+          await waitForNextUpdate();
+        });
+
+        expect(axios.get).toHaveBeenCalledWith("/testEndpoint/5");
+      });
+    });
+  });
+
   describe("on failure", () => {
     it("should set error to failure message and set isLoading false", async () => {
       const getTestData = () => axios.get("/testEndpoint");
