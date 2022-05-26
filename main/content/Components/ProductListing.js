@@ -11,8 +11,9 @@ import { getProducts } from "../api/apiCalls/RoboPantryAPICalls";
 import { Link } from "@react-navigation/native";
 import { useAPI } from "../api/Hooks/useAPI";
 import FallbackError from "./FallbackError";
+import AddElementButton from "./AddElementButton";
 
-const ProductListing = () => {
+const ProductListing = ({ navigation }) => {
   var [isLoading, products, error, reload] = useAPI(getProducts);
 
   if (isLoading)
@@ -42,6 +43,7 @@ const ProductListing = () => {
           />
         )}
       </View>
+      <AddElementButton location="New Purchase" navigation={navigation} />
     </SafeAreaView>
   );
 };

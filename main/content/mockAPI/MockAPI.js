@@ -1,17 +1,10 @@
 import { commerce, company, datatype, date, random } from "faker";
-import {
-  belongsTo,
-  createServer,
-  Factory,
-  hasMany,
-  Model,
-  Response,
-  RestSerializer,
-} from "miragejs";
+import { belongsTo, createServer, Factory, hasMany, Model } from "miragejs";
 import { getUnitsOfMeasure } from "../constants/unitsOfMeasure";
 import ApplicationSerializer from "./ApplicationSerializer";
 import generateCalculatedMockData from "./generateCalculatedMockData";
 import { getProductCategories } from "../constants/productCategory";
+import { object } from "yup";
 
 export function startMockAPIServer({ environment = "development" } = {}) {
   if (environment !== "test") console.log("Mock API Server starting!");
@@ -36,12 +29,25 @@ export function startMockAPIServer({ environment = "development" } = {}) {
           request.requestBody
         );
 
-        const createdProduct = schema.products.create(product);
-        const createdProductVariant = schema.productVariants.create(
-          Object.assign(product_variant, { product: createdProduct })
-        );
+        const createdProduct =
+          product.id && schema.products.findBy({ id: product.id })
+            ? schema.products.findBy({ id: product.id })
+            : schema.products.create(object().camelCase().cast(product));
+
+        const createdProductVariant =
+          product_variant.id &&
+          schema.productVariants.findBy({ id: product_variant.id })
+            ? schema.productVariants.findBy({ id: product_variant.id })
+            : schema.productVariants.create(
+                Object.assign(object().camelCase().cast(product_variant), {
+                  product: createdProduct,
+                })
+              );
+
         const createdPurchase = schema.purchases.create(
-          Object.assign(purchase, { productVariant: createdProductVariant })
+          Object.assign(object().camelCase().cast(purchase), {
+            productVariant: createdProductVariant,
+          })
         );
 
         return schema.products.findBy({ id: product.id });
@@ -76,7 +82,7 @@ export function startMockAPIServer({ environment = "development" } = {}) {
     },
     factories: {
       product: Factory.extend({
-        name() {
+        productName() {
           return commerce.productName();
         },
         category() {

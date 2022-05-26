@@ -57,7 +57,9 @@ describe("ProductDetails page", () => {
       apiSpy.mockReset();
     });
     it("should display all details correctly", () => {
-      const { getByText } = render(<ProductDetails route={{ params: {} }} />);
+      const { getByText, getByTestId } = render(
+        <ProductDetails route={{ params: {} }} />
+      );
 
       const title = getByText("Banana");
       expect(title.props.style.fontSize).toBeGreaterThan(20);
@@ -79,6 +81,8 @@ describe("ProductDetails page", () => {
       expect(onHand.props.style.fontSize).toBeLessThan(30);
 
       const accordion = getByText("Mocked Accordion");
+
+      const newElementButton = getByTestId("AddElementButton");
     });
   });
 

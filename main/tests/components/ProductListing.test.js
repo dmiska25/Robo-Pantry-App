@@ -63,6 +63,11 @@ describe("ProductListing page", () => {
         );
       });
     });
+
+    it("displays new element button", () => {
+      const { getByTestId } = render(<ProductListing />);
+      const result = getByTestId("AddElementButton");
+    });
   });
 
   describe("when error is not null", () => {
