@@ -152,9 +152,6 @@ describe("fetch api data", () => {
       });
 
       expect(axios.get).toHaveBeenCalled();
-
-      console.log(result.current);
-
       expect(result.current[0]).toEqual(false);
       expect(result.current[1]).toEqual(undefined);
       expect(result.current[2]).toEqual(
