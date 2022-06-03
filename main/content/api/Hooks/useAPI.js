@@ -1,40 +1,34 @@
 // ./src/hooks.js
-import { useState, useEffect } from "react";
+import { useQuery } from "react-query";
 import * as Sentry from "sentry-expo";
+import { getQueryClient } from "../../constants/queryClient";
 
 export const useAPI = (
   apiFunction,
   params,
   { conditional = () => false } = {}
 ) => {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = getQueryClient();
 
   const loadData = () => {
-    setError(null);
-    if (conditional && conditional(params)) return;
-    setIsLoading(true);
-    apiFunction(params)
-      .then(({ data }) => {
-        setData(data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError("Error: Failed to retrieve data from server!");
-        setIsLoading(false);
-        console.log(err);
-        Sentry.captureException(err);
-      });
-  };
-  const reloadData = () => {
-    if (isLoading == true) return;
-    loadData();
+    return useQuery(
+      [apiFunction.name, params],
+      async () => {
+        const { data } = await apiFunction(params).catch((err) => {
+          console.log(err);
+          Sentry.captureException(err);
+        });
+        return data;
+      },
+      {
+        enabled: !conditional(params),
+      }
+    );
   };
 
-  useEffect(() => {
-    loadData();
-  }, [apiFunction, params]);
+  const reloadData = () =>
+    queryClient.invalidateQueries([apiFunction.name, params]);
 
-  return [isLoading, data, error, reloadData];
+  const { isLoading, data, error } = loadData();
+  return [isLoading, data, error?.message, reloadData];
 };

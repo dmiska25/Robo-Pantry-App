@@ -207,9 +207,10 @@ const NewPurchaseForm = () => {
     if (selectedProductVariant !== "new")
       embeddedProduct.productVariant = getProductVariant();
     if (selectedProduct !== "new") embeddedProduct.product = getProduct();
+    else setTimeout(reloadProducts, 200);
 
     setEmbeddedProduct(embeddedProduct);
-    reloadProducts();
+    setTimeout(reloadProduct, 200);
   };
 
   return (

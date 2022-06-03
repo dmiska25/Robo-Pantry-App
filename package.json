@@ -36,6 +36,7 @@
     "react-native-screens": "^3.9.0",
     "react-native-table-component": "^1.2.1",
     "react-native-web": "^0.17.5",
+    "react-query": "^3.39.1",
     "sentry-expo": "^4.0.0",
     "xstate": "^4.32.1",
     "yup": "^0.32.11"
