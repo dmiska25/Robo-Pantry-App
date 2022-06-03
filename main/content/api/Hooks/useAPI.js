@@ -63,7 +63,8 @@ export const useAPI = (
     );
   };
 
-  const reloadData = () => queryClient.invalidateQueries(apiFunction.name);
+  const reloadData = () =>
+    queryClient.invalidateQueries([apiFunction.name, params]);
 
   const { isLoading, data, error } = loadData();
   return [isLoading, data, error?.message, reloadData];
