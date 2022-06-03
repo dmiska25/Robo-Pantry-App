@@ -10,6 +10,8 @@ import { ErrorBoundary } from "@sentry/react";
 import FallbackError from "./main/content/Components/FallbackError";
 import { SENTRY_DNS } from "@env";
 import NewPurchaseForm from "./main/content/Components/NewPurchase";
+import { QueryClientProvider } from "react-query";
+import { getQueryClient } from "./main/content/constants/queryClient";
 
 // TODO: Figure out root cause of this issue
 LogBox.ignoreLogs(["Overwriting fontFamily", "Constants.deviceYearClass"]);
@@ -32,13 +34,15 @@ window.server = startMockAPIServer({ environment: "production" });
 
 const App = () => (
   <ErrorBoundary fallback={FallbackError}>
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Product Listing" component={ProductListing} />
-        <Stack.Screen name="Product Details" component={ProductDetails} />
-        <Stack.Screen name="New Purchase" component={NewPurchaseForm} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <QueryClientProvider client={getQueryClient()}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Product Listing" component={ProductListing} />
+          <Stack.Screen name="Product Details" component={ProductDetails} />
+          <Stack.Screen name="New Purchase" component={NewPurchaseForm} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   </ErrorBoundary>
 );
 
