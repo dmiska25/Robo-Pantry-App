@@ -11,20 +11,5 @@ describe("AddElementButton", () => {
       getByTestId("AddElementButton");
       getByText("+");
     });
-
-    it("should pass down location and execute on press", () => {
-      const navFuncMock = jest.fn();
-      const navMock = {
-        navigate: navFuncMock,
-      };
-
-      const { getByTestId } = render(
-        <AddElementButton location="test" navigation={navMock} />
-      );
-
-      const result = getByTestId("AddElementButton");
-      fireEvent.press(result);
-      expect(navFuncMock).toHaveBeenCalledWith("test");
-    });
   });
 });

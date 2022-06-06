@@ -22,7 +22,7 @@ import DatePickerForm from "./DatePickerForm";
 import FallbackError from "./FallbackError";
 import StandardPageDeliminator from "./StandardPageDeliminator";
 
-const NewPurchaseForm = () => {
+const NewPurchaseForm = ({ route }) => {
   const [productsAreLoading, products, productsError, reloadProducts] =
     useAPI(getProducts);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,11 +40,19 @@ const NewPurchaseForm = () => {
   const [newProductForm, setNewProductForm] = useState(false);
   const [selectedProductVariant, setSelectedProductVariant] = useState(null);
   const [productVariantPicker, setProductVariantPicker] = useState(false);
+  const [productPicker, setProductPicker] = useState(true);
   const [newProductVariantForm, setNewProductVariantForm] = useState(false);
   const [newPurchaseForm, setNewPurchaseForm] = useState(false);
+  const itemId = route?.params?.itemId;
 
   useEffect(() => {
     switch (true) {
+      case productIsLoading == false && !!itemId:
+        setSelectedProduct(itemId);
+        setProductPicker(false);
+        setProductVariantPicker(true);
+        setNewProductForm(false);
+        break;
       case productIsLoading == null || productIsLoading == true:
       case selectedProduct == null:
         setProductVariantPicker(false);
@@ -218,6 +226,7 @@ const NewPurchaseForm = () => {
       <View style={styles.listingContainer}>
         <Picker
           style={styles.objectPickerStyle}
+          enabled={productPicker}
           selectedValue={selectedProduct}
           onValueChange={handleProductSelectionChange}
           testID="productPicker"

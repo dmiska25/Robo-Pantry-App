@@ -1,16 +1,17 @@
+import { Link } from "@react-navigation/native";
 import React from "react";
-import { Button, Pressable, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 
-export default ({ navigation, location }) => {
+export default ({ location, context }) => {
   return (
     <>
-      <Pressable
+      <Link
         style={styles.button}
-        onPress={() => navigation.navigate(location)}
+        to={{ screen: location, params: context }}
         testID="AddElementButton"
       >
         <Text style={styles.text}>+</Text>
-      </Pressable>
+      </Link>
     </>
   );
 };
