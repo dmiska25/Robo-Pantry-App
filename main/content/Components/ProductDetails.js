@@ -60,7 +60,7 @@ const ProductDetails = ({ route, navigation }) => {
         <Text style={styles.subtitle}>On Hand</Text>
         <AccordionDetails sectionData={product.productVariants} />
       </View>
-      <AddElementButton location="New Purchase" navigation={navigation} />
+      <AddElementButton location="New Purchase" context={{ itemId: itemId }} />
     </SafeAreaView>
   );
 };

@@ -160,6 +160,39 @@ describe("NewPurchase page", () => {
     });
   });
 
+  describe("When navigated to from a details page", () => {
+    beforeAll(() => {
+      spy.mockImplementation((apiFunction) => {
+        switch (apiFunction) {
+          case getProducts:
+            return [false, mockListingData, undefined];
+          case getProductById:
+            return [false, mockTestProduct1Details, null];
+          case postEmbeddedProduct:
+            return [false, {}, null];
+        }
+      });
+    });
+    afterAll(() => {
+      spy.mockReset();
+    });
+
+    it("should select passed itemId for product", () => {
+      const mockRoute = {
+        params: {
+          itemId: 1,
+        },
+      };
+      const { getByTestId, debug } = render(
+        <NewPurchaseForm route={mockRoute} />
+      );
+
+      const result = getByTestId("productPicker");
+      expect(result._fiber.pendingProps.selectedIndex).toBe(2);
+      // TODO: Should also check that the selecter is disabled, but not sure how to do this currently
+    });
+  });
+
   describe("When navigating states", () => {
     const testPlans = newPurchaseModel.getSimplePathPlans();
 
