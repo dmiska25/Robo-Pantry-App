@@ -1,6 +1,6 @@
 import { Link } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default ({ location, context }) => {
   return (
@@ -10,7 +10,7 @@ export default ({ location, context }) => {
         to={{ screen: location, params: context }}
         testID="AddElementButton"
       >
-        <Text style={styles.text}>+</Text>
+        +
       </Link>
     </>
   );
@@ -25,14 +25,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 19,
     right: 19,
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  text: {
     textAlign: "center",
     justifyContent: "center",
     fontSize: 40,
-    height: "100%",
-    width: "100%",
   },
 });
