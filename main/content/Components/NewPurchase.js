@@ -87,7 +87,7 @@ const NewPurchaseForm = ({ route }) => {
     }
   }, [selectedProductVariant]);
 
-  const { control, handleSubmit } = useForm({
+  const { control, reset, handleSubmit } = useForm({
     mode: "",
     defaultValues: {
       productName: "",
@@ -219,6 +219,9 @@ const NewPurchaseForm = ({ route }) => {
 
     setEmbeddedProduct(embeddedProduct);
     setTimeout(reloadProduct, 200);
+
+    reset();
+    setSelectedProduct(null);
   };
 
   return (
