@@ -11,7 +11,9 @@ jest.setTimeout(5000);
 jest.mock("axios");
 jest.mock("sentry-expo", () => ({
   init: () => jest.fn(),
-  captureException: () => jest.fn(),
+  Native: {
+    captureException: () => jest.fn(),
+  },
 }));
 const queryClientSpy = jest.spyOn(queryClientBeen, "getQueryClient");
 
@@ -80,6 +82,29 @@ describe("fetch api data", () => {
         expect(axios.get).toHaveBeenCalledWith("/testEndpoint/5");
       });
     });
+
+    describe("with 'onSuccess' lambda", () => {
+      it("should call the lambda once after success", async () => {
+        const mockOnSuccess = jest.fn();
+        const getTestData = () => axios.get("/testEndpoint");
+        const { result, waitForNextUpdate } = renderHook(
+          () => useAPI(getTestData, undefined, { onSuccess: mockOnSuccess }),
+          { wrapper }
+        );
+
+        await act(async () => {
+          await waitForNextUpdate();
+        });
+
+        const { data: expectedData } = mockData;
+
+        expect(result.current[0]).toEqual(false);
+        expect(result.current[1]).toEqual(expectedData);
+        expect(result.current[2]).toEqual(undefined);
+
+        expect(mockOnSuccess).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 
   describe("conditional", () => {
@@ -143,7 +168,12 @@ describe("fetch api data", () => {
     });
     it("should set error to failure message and set isLoading false", async () => {
       const { result, waitForNextUpdate } = renderHook(
-        () => useAPI(getTestData),
+        () =>
+          useAPI(getTestData, undefined, {
+            onFailure: () => {
+              throw Error("Cannot retireve test Data!");
+            },
+          }),
         { wrapper }
       );
 
@@ -154,9 +184,7 @@ describe("fetch api data", () => {
       expect(axios.get).toHaveBeenCalled();
       expect(result.current[0]).toEqual(false);
       expect(result.current[1]).toEqual(undefined);
-      expect(result.current[2]).toEqual(
-        "Cannot read properties of undefined (reading 'data')"
-      );
+      expect(result.current[2]).toEqual("Cannot retireve test Data!");
     });
   });
 

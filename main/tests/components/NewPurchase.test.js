@@ -137,16 +137,62 @@ describe("NewPurchase page", () => {
     });
   });
 
-  describe("When an error occurs", () => {
+  describe("When an products error occurs", () => {
     beforeAll(() => {
       spy.mockImplementation((apiFunction) => {
         switch (apiFunction) {
           case getProducts:
             return [false, null, "error loading page"];
           case getProductById:
-            return [false, mockTestProduct1Details, null];
+            return [false, mockTestProduct1Details, undefined];
           case postEmbeddedProduct:
-            return [false, {}, null];
+            return [false, {}, undefined];
+        }
+      });
+    });
+    afterAll(() => {
+      spy.mockReset();
+    });
+
+    it("should display error page", () => {
+      const { getByTestId } = render(<NewPurchaseForm />);
+      const result = getByTestId("ApiError");
+    });
+  });
+
+  describe("When a product error occurs", () => {
+    beforeAll(() => {
+      spy.mockImplementation((apiFunction) => {
+        switch (apiFunction) {
+          case getProducts:
+            return [false, null, undefined];
+          case getProductById:
+            return [false, mockTestProduct1Details, "error loading page"];
+          case postEmbeddedProduct:
+            return [false, {}, undefined];
+        }
+      });
+    });
+    afterAll(() => {
+      spy.mockReset();
+    });
+
+    it("should display error page", () => {
+      const { getByTestId } = render(<NewPurchaseForm />);
+      const result = getByTestId("ApiError");
+    });
+  });
+
+  describe("When a new purchase error occurs", () => {
+    beforeAll(() => {
+      spy.mockImplementation((apiFunction) => {
+        switch (apiFunction) {
+          case getProducts:
+            return [false, null, undefined];
+          case getProductById:
+            return [false, mockTestProduct1Details, undefined];
+          case postEmbeddedProduct:
+            return [false, {}, "error submitting product"];
         }
       });
     });
