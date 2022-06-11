@@ -6,7 +6,7 @@ import { getQueryClient } from "../../constants/queryClient";
 export const useAPI = (
   apiFunction,
   params,
-  { conditional = () => false } = {}
+  { conditional = () => false, onSuccess = () => {}, onFailure = () => {} } = {}
 ) => {
   const queryClient = getQueryClient();
 
@@ -14,10 +14,17 @@ export const useAPI = (
     return useQuery(
       [apiFunction.name, params],
       async () => {
-        const { data } = await apiFunction(params).catch((err) => {
-          console.log(err);
-          Sentry.captureException(err);
-        });
+        var data;
+        await apiFunction(params)
+          .then((res) => {
+            data = res.data;
+            onSuccess();
+          })
+          .catch((err) => {
+            console.log(err);
+            Sentry.Native.captureException(err, {});
+            onFailure();
+          });
         return data;
       },
       {
