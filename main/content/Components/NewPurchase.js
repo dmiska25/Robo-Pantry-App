@@ -23,20 +23,41 @@ import FallbackError from "./FallbackError";
 import StandardPageDeliminator from "./StandardPageDeliminator";
 
 const NewPurchaseForm = ({ route }) => {
-  const [productsAreLoading, products, productsError, reloadProducts] =
-    useAPI(getProducts);
+  const { control, reset, handleSubmit } = useForm({
+    mode: "",
+    defaultValues: {
+      productName: "",
+      category: null,
+      unitOfMeasure: null,
+      brand: "",
+      unitsPerProduct: "",
+      barcode: "",
+      purchaseDate: new Date(),
+      productsPurchased: "",
+    },
+  });
+
+  const [productsAreLoading, products, productsError, reloadProducts] = useAPI(
+    getProducts,
+    undefined,
+    {
+      onFailure: () => {
+        throw Error("Failed to retrieve Products!");
+      },
+    }
+  );
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productIsLoading, product, productError, reloadProduct] = useAPI(
     getProductById,
     selectedProduct,
-    { conditional: (product) => !product || product == "new" }
+    {
+      conditional: (product) => !product || product == "new",
+      onFailure: () => {
+        throw Error("Failed to retrieve selected Product!");
+      },
+    }
   );
   const [embeddedProduct, setEmbeddedProduct] = useState(null);
-  const [sendingResponse, result, errorSending, retrySending] = useAPI(
-    postEmbeddedProduct,
-    embeddedProduct,
-    { conditional: (embeddedProduct) => !embeddedProduct }
-  );
   const [newProductForm, setNewProductForm] = useState(false);
   const [selectedProductVariant, setSelectedProductVariant] = useState(null);
   const [productVariantPicker, setProductVariantPicker] = useState(false);
@@ -44,6 +65,23 @@ const NewPurchaseForm = ({ route }) => {
   const [newProductVariantForm, setNewProductVariantForm] = useState(false);
   const [newPurchaseForm, setNewPurchaseForm] = useState(false);
   const itemId = route?.params?.itemId;
+
+  const [sendingResponse, result, errorSending, retrySending] = useAPI(
+    postEmbeddedProduct,
+    embeddedProduct,
+    {
+      conditional: (embeddedProduct) => !embeddedProduct,
+      onSuccess: () => {
+        reloadProducts();
+        reloadProduct();
+        reset();
+        setSelectedProduct(null);
+      },
+      onFailure: () => {
+        throw Error("Failed to submit new Purchase!");
+      },
+    }
+  );
 
   useEffect(() => {
     switch (true) {
@@ -87,20 +125,6 @@ const NewPurchaseForm = ({ route }) => {
     }
   }, [selectedProductVariant]);
 
-  const { control, reset, handleSubmit } = useForm({
-    mode: "",
-    defaultValues: {
-      productName: "",
-      category: null,
-      unitOfMeasure: null,
-      brand: "",
-      unitsPerProduct: "",
-      barcode: "",
-      purchaseDate: new Date(),
-      productsPurchased: "",
-    },
-  });
-
   if (productsAreLoading)
     return (
       <ActivityIndicator
@@ -112,6 +136,10 @@ const NewPurchaseForm = ({ route }) => {
     );
   if (productsError)
     return <FallbackError error={productsError} resetError={reloadProducts} />;
+  else if (productError)
+    return <FallbackError error={productError} resetError={reloadProduct} />;
+  else if (errorSending)
+    return <FallbackError error={errorSending} resetError={retrySending} />;
 
   const renderProductSelection = (products) => {
     return [
@@ -215,13 +243,8 @@ const NewPurchaseForm = ({ route }) => {
     if (selectedProductVariant !== "new")
       embeddedProduct.productVariant = getProductVariant();
     if (selectedProduct !== "new") embeddedProduct.product = getProduct();
-    else setTimeout(reloadProducts, 200);
 
     setEmbeddedProduct(embeddedProduct);
-    setTimeout(reloadProduct, 200);
-
-    reset();
-    setSelectedProduct(null);
   };
 
   return (
