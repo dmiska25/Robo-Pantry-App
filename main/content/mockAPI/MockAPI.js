@@ -1,4 +1,4 @@
-import { commerce, company, datatype, date, random } from "faker";
+import { faker } from "@faker-js/faker";
 import { belongsTo, createServer, Factory, hasMany, Model } from "miragejs";
 import { getUnitsOfMeasure } from "../constants/unitsOfMeasure";
 import ApplicationSerializer from "./ApplicationSerializer";
@@ -83,44 +83,54 @@ export function startMockAPIServer({ environment = "development" } = {}) {
     factories: {
       product: Factory.extend({
         productName() {
-          return commerce.productName();
+          return faker.commerce.productName();
         },
         category() {
-          return random.arrayElement(Object.values(getProductCategories()))
-            .json;
+          return faker.helpers.arrayElement(
+            Object.values(getProductCategories())
+          ).json;
         },
-        unitsOnHand: datatype.number({ min: 4, max: 200 }),
+        unitsOnHand() {
+          return faker.number.int({ min: 4, max: 200 });
+        },
         unitOfMeasure() {
-          return random.arrayElement(Object.values(getUnitsOfMeasure())).json;
+          return faker.helpers.arrayElement(Object.values(getUnitsOfMeasure()))
+            .json;
         },
       }),
       productVariant: Factory.extend({
         brand() {
-          return company.companyName();
+          return faker.company.name();
         },
-        productsOnHand: datatype.number({ min: 4, max: 200 }),
-        unitsPerProduct: datatype.number({ min: 2, max: 10 }),
+        productsOnHand() {
+          return faker.number.int({ min: 4, max: 200 });
+        },
+        unitsPerProduct() {
+          return faker.number.int({ min: 2, max: 10 });
+        },
         barcode() {
-          return datatype.number({ min: 10000000, max: 10000000000 });
+          return faker.number.int({ min: 10000000, max: 10000000000 });
         },
       }),
       purchase: Factory.extend({
         purchaseDate() {
-          return date.past();
+          return faker.date.past();
         },
-        productsPurchased: datatype.number({ min: 2, max: 20 }),
+        productsPurchased() {
+          return faker.number.int({ min: 2, max: 20 });
+        },
       }),
     },
     seeds(server) {
       const productsData = generateCalculatedMockData();
 
-      for (var i = 0; i < productsData.length; i++) {
+      for (let i = 0; i < productsData.length; i++) {
         const productData = productsData[i];
         const variantsData = productData.variantData;
         const product = server.create("product", {
           unitsOnHand: productData.unitsOnHand,
         });
-        for (var j = 0; j < variantsData.length; j++) {
+        for (let j = 0; j < variantsData.length; j++) {
           const variantData = variantsData[j];
           const purchaseData = variantData.productsOnHandPartitions;
           const variant = server.create("productVariant", {
@@ -129,7 +139,7 @@ export function startMockAPIServer({ environment = "development" } = {}) {
             unitsPerProduct: variantData.unitsPerProduct,
           });
 
-          for (var k = 0; k < purchaseData.length; k++) {
+          for (let k = 0; k < purchaseData.length; k++) {
             server.create("purchase", {
               productVariant: variant,
               productsPurchased: purchaseData[k],

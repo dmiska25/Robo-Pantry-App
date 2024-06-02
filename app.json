@@ -20,6 +20,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.yourcompany.yourappname",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -37,11 +39,15 @@
           "file": "sentry-expo/upload-sourcemaps",
           "config": {
             "organization": "DylanJMiska",
-            "project": "RoboPantryApp",
-            "authToken": "8e9e7a33f9de41ce832812f49a9f27b839a52634c6b24c538ff994bb082b2c2f"
+            "project": "RoboPantryApp"
           }
         }
       ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "aaa51abb-f00c-499d-90b9-77ca918928fc"
+      }
     }
   }
 }
