@@ -18,7 +18,7 @@ LogBox.ignoreLogs(["Overwriting fontFamily", "Constants.deviceYearClass"]);
 
 // sentry logging
 Sentry.init({
-  dsn: `${SENTRY_DNS}`,
+  dsn: "https://cd732409b78a4454b2c56793a50c4410@o1119110.ingest.sentry.io/6153383",
   enableInExpoDevelopment: true,
   debug: true,
   tracesSampleRate: 0.01,

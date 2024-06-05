@@ -20,7 +20,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.yourcompany.yourappname",
+      "package": "com.dmiska25.RoboPantryApp",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -38,8 +38,8 @@
         {
           "file": "sentry-expo/upload-sourcemaps",
           "config": {
-            "organization": "DylanJMiska",
-            "project": "RoboPantryApp"
+            "organization": "dylanjmiska",
+            "project": "robo-pantry-app"
           }
         }
       ]
