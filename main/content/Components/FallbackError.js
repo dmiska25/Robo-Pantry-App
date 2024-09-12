@@ -17,7 +17,7 @@ const FallbackError = ({ error, resetError }) => {
           style={styles.image}
           source={require("../../../assets/sad.png")}
         />
-        <Text style={styles.error}>{error.toString()}</Text>
+        <Text style={styles.error}>{error?.toString()}</Text>
 
         <Button
           onPress={() => resetError()}

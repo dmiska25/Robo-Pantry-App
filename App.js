@@ -8,7 +8,6 @@ import { LogBox } from "react-native";
 import * as Sentry from "sentry-expo";
 import { ErrorBoundary } from "@sentry/react";
 import FallbackError from "./main/content/Components/FallbackError";
-import { SENTRY_DNS } from "@env";
 import NewPurchaseForm from "./main/content/Components/NewPurchase";
 import { QueryClientProvider } from "react-query";
 import { getQueryClient } from "./main/content/constants/queryClient";
