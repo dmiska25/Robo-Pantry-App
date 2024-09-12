@@ -8,26 +8,14 @@ import {
 } from "react-native";
 import { getProductById } from "../api/apiCalls/RoboPantryAPICalls";
 import { useAPI } from "../api/Hooks/useAPI";
-import AccordionDetails from "./AccordionDetails";
 import StandardPageDeliminator from "./StandardPageDeliminator";
 import FallbackError from "./FallbackError";
 import AddElementButton from "./AddElementButton";
+import PurchaseListing from "./PurchaseListing";
 
 const ProductDetails = ({ route, navigation }) => {
   const { itemId } = route.params;
   const [isLoading, product, error, reload] = useAPI(getProductById, itemId);
-
-  // TODO: calculate last purchased on the backend
-  const calculateLastPurchase = () => {
-    return product.productVariants
-      .flatMap((productVariant) =>
-        productVariant.purchases.map((purchase) => purchase.purchaseDate)
-      )
-      .reduce((date1, date2) =>
-        date1.getTime() > date2.getTime() ? date1 : date2
-      )
-      .toLocaleDateString();
-  };
 
   if (isLoading)
     return (
@@ -50,15 +38,14 @@ const ProductDetails = ({ route, navigation }) => {
       <View style={styles.productDetails}>
         <Text style={styles.subtitle}>Details</Text>
         <Text>Product Category: {product.category.long}</Text>
-        <Text>
-          Units on Hand: {product.unitsOnHand} {product.unitOfMeasure.plural}
-        </Text>
-        <Text>Last Purchased: {calculateLastPurchase()}</Text>
+        <Text>Brand: {product.brand}</Text>
+        <Text>Products On Hand: {product.productsOnHand}</Text>
+        <Text>Units Per Product: {product.unitsPerProduct}</Text>
+        <Text>Barcode: {product.barcode}</Text>
       </View>
       <StandardPageDeliminator />
       <View style={styles.productPurchases}>
-        <Text style={styles.subtitle}>On Hand</Text>
-        <AccordionDetails sectionData={product.productVariants} />
+        <PurchaseListing purchaseHistory={product.purchases} />
       </View>
       <AddElementButton location="New Purchase" context={{ itemId: itemId }} />
     </SafeAreaView>

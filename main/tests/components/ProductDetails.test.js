@@ -7,8 +7,8 @@ import { getUnitsOfMeasure } from "../../content/constants/unitsOfMeasure";
 import { getProductCategories } from "../../content/constants/productCategory";
 
 const apiSpy = jest.spyOn(api, "useAPI");
-const accordionMocking = () => <Text>Mocked Accordion</Text>;
-jest.mock("../../content/Components/AccordionDetails", () => accordionMocking);
+const purchaseListingMock = () => <Text>Mocked Purchases</Text>;
+jest.mock("../../content/Components/PurchaseListing", () => purchaseListingMock);
 jest.mock("@sentry/react-native", () => ({ init: () => jest.fn() }));
 
 describe("ProductDetails page", () => {
@@ -33,22 +33,17 @@ describe("ProductDetails page", () => {
       category: getProductCategories().PRODUCE,
       unitsOnHand: 7,
       unitOfMeasure: getUnitsOfMeasure().UNIT,
-      productVariants: [
+      brand: "Dole",
+      productsOnHand: 7,
+      unitsPerProduct: 1,
+      purchases: [
         {
-          id: 2,
-          brand: "Dole",
-          productsOnHand: 7,
-          unitsPerProduct: 1,
-          purchases: [
-            {
-              id: 3,
-              purchaseDate: new Date(2021, 8, 19),
-              productsPurchased: 7,
-            },
-          ],
-          barcode: 45634256,
+          id: 3,
+          purchaseDate: new Date(2021, 8, 19),
+          productsPurchased: 7,
         },
       ],
+      barcode: 45634256,
     };
     beforeAll(() => {
       apiSpy.mockReturnValue([false, productMock, null]);
@@ -69,18 +64,12 @@ describe("ProductDetails page", () => {
       expect(details.props.style.fontSize).toBeLessThan(30);
 
       const uoh = getByText(
-        `Units on Hand: ${productMock.unitsOnHand} ${productMock.unitOfMeasure.plural}`
+        `Brand: ${productMock.brand}`
       );
 
-      const lastPurchased = getByText(
-        `Last Purchased: ${productMock.productVariants[0].purchases[0].purchaseDate.toLocaleDateString()}`
-      );
+      const onHand = getByText(`Products On Hand: ${productMock.productsOnHand}`);
 
-      const onHand = getByText("On Hand");
-      expect(onHand.props.style.fontSize).toBeGreaterThan(10);
-      expect(onHand.props.style.fontSize).toBeLessThan(30);
-
-      const accordion = getByText("Mocked Accordion");
+      const accordion = getByText("Mocked Purchases");
 
       const newElementButton = getByTestId("AddElementButton");
     });

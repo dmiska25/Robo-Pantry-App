@@ -12,9 +12,10 @@ import {
 } from "../../content/api/apiCalls/RoboPantryAPICalls";
 import { getProductCategories } from "../../content/constants/productCategory";
 import { getUnitsOfMeasure } from "../../content/constants/unitsOfMeasure";
-import newPurchaseModel from "../xstate/models/NewPurchase";
 import * as api from "../../content/api/Hooks/useAPI";
 import NewPurchaseForm from "../../content/Components/NewPurchase";
+import { createTestModel } from "@xstate/graph";
+import newPurchaseMachine from "../xstate/machines/NewPurchase";
 
 const mockListingData = [
   {
@@ -238,10 +239,30 @@ describe("NewPurchase page", () => {
       // TODO: Should also check that the selecter is disabled, but not sure how to do this currently
     });
   });
-
-  describe("When navigating states", () => {
-    const testPlans = newPurchaseModel.getSimplePathPlans();
-
+  
+  const newPurchaseModel = createTestModel(newPurchaseMachine);
+  
+  // Mapping of testId elements
+  const elements = {
+    1: "productPicker",
+    2: "productNameInput",
+    3: "productCategoryPicker",
+    4: "productUOMPicker",
+    6: "productBrandInput",
+    7: "productUPPInput",
+    8: "productBarcodeInput",
+    9: "purchaseDateSelecter",
+    10: "purchaseProductsPurchasedInput",
+  };
+  
+  // Function to ensure elements exist
+  const ensureElements = async (getByTestId, elementIds) => {
+    for (const elementId of elementIds) {
+      await getByTestId(elements[elementId]);
+    }
+  };
+  
+  describe("New Purchase Form", () => {
     beforeAll(() => {
       spy.mockImplementation((apiFunction) => {
         switch (apiFunction) {
@@ -258,16 +279,49 @@ describe("NewPurchase page", () => {
       spy.mockReset();
     });
 
-    testPlans.forEach((plan) => {
-      describe(plan.description, () => {
-        afterEach(cleanup);
-        plan.paths.forEach((path) => {
-          it(path.description, () => {
-            const rendered = render(<NewPurchaseForm />);
-            return path.test(rendered);
-          });
+    // Test all possible paths
+    newPurchaseModel.getSimplePaths().forEach((path) => {
+      it(path.description, async () => {
+        const screen = render(<NewPurchaseForm />);
+  
+        await path.test({
+          // Define what each state should assert
+          states: {
+            new_purchase: async () => {
+              // Check for specific elements in 'new_purchase' state
+              await ensureElements(screen.getByTestId, [1]);
+            },
+            new_product: async () => {
+              // Check for specific elements in 'new_product' state
+              await ensureElements(screen.getByTestId, [
+                1, 2, 3, 4, 6, 7, 8, 9, 10,
+              ]);
+            },
+            existing_product: async () => {
+              // Check for specific elements in 'existing_product' state
+              await ensureElements(screen.getByTestId, [1, 9, 10]);
+            },
+          },
+          // Implement the event logic as before
+          events: {
+            CLICK_EXISTING_PRODUCT: async () => {
+              const picker = screen.getByTestId("productPicker");
+              fireEvent(picker, "onValueChange", 1);
+            },
+            CLICK_NEW_PRODUCT: async () => {
+              const picker = screen.getByTestId("productPicker");
+              fireEvent(picker, "onValueChange", "new");
+            },
+            CLICK_SELECT_PRODUCT: async () => {
+              const picker = screen.getByTestId("productPicker");
+              fireEvent(picker, "onValueChange", null);
+            },
+          },
         });
+  
+        // Clean up after each test
+        cleanup();
       });
     });
-  });
+  });  
 });

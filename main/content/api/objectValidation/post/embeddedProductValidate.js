@@ -3,12 +3,9 @@ import { date, object, number, string } from "yup";
 let embeddedProductSchema = object({
   product: object({
     id: number(),
-    product_name: string().required(),
+    name: string().required(),
     category: string().required(),
     unit_of_measure: string().required(),
-  }).transformKeys((key) => underscore(key)),
-  product_variant: object({
-    id: number(),
     brand: string().required(),
     units_per_product: number().required(),
     barcode: number().required(),

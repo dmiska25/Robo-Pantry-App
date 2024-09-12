@@ -55,11 +55,9 @@ describe("getProductsById", () => {
 describe("postEmbeddedProduct", () => {
   let embeddedProductMock = {
     product: {
-      product_name: "Root Beer",
+      name: "Root Beer",
       category: "Beverage",
       unit_of_measure: "oz",
-    },
-    product_variant: {
       brand: "A&W",
       units_per_product: 8,
       barcode: 76982361,

@@ -9,38 +9,16 @@ const generateCalculatedMockData = () => {
   const NUMBER_OF_PRODUCTS = 20;
 
   for (let i = 0; i < NUMBER_OF_PRODUCTS; i++) {
-    const variantData = [];
-    const numberOfVariants = rand({ min: 1, max: 3 });
-    const unitsOnHand = rand({ min: 10, max: 300 });
-    const unitsOnHandPartitions = partition(
-      unitsOnHand,
-      numberOfVariants,
-      0.01
-    );
-
-    for (let j = 0; j < numberOfVariants; j++) {
-      const variantUnitsOnHand = unitsOnHandPartitions[j];
-      const maxProductsOnHand = Math.max(1, Math.floor(variantUnitsOnHand / 2));
-      const productsOnHand = rand({ min: 1, max: maxProductsOnHand });
-      const unitsPerProduct = variantUnitsOnHand / productsOnHand;
-      const maxPurchases = Math.max(1, Math.min(3, productsOnHand));
-      const numberOfPurchases = rand({ min: 1, max: maxPurchases });
-      const productsOnHandPartitions = partition(
-        productsOnHand,
-        numberOfPurchases,
-        1
-      );
-
-      variantData.push({
-        productsOnHand: productsOnHand,
-        unitsPerProduct: unitsPerProduct,
-        productsOnHandPartitions: productsOnHandPartitions,
-      });
-    }
+    const productsOnHand = rand({ min: 10, max: 300 });
+    const unitsPerProduct = rand({ min: 1, max: 10 });
+    const maxPurchases = Math.max(1, Math.min(3, productsOnHand));
+    const numberOfPurchases = rand({ min: 1, max: maxPurchases });
+    const productsOnHandPartitions = partition(productsOnHand, numberOfPurchases, 1);
 
     calculatedData.push({
-      unitsOnHand: unitsOnHand,
-      variantData: variantData,
+      productsOnHand: productsOnHand,
+      unitsPerProduct: unitsPerProduct,
+      productsOnHandPartitions: productsOnHandPartitions,
     });
   }
   return calculatedData;

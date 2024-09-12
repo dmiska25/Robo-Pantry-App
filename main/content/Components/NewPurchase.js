@@ -26,7 +26,7 @@ const NewPurchaseForm = ({ route }) => {
   const { control, reset, handleSubmit } = useForm({
     mode: "",
     defaultValues: {
-      productName: "",
+      name: "",
       category: null,
       unitOfMeasure: null,
       brand: "",
@@ -41,7 +41,7 @@ const NewPurchaseForm = ({ route }) => {
     getProducts,
     undefined,
     {
-      onFailure: () => {
+      onFailure: (err) => {
         throw Error("Failed to retrieve Products!");
       },
     }
@@ -52,17 +52,14 @@ const NewPurchaseForm = ({ route }) => {
     selectedProduct,
     {
       conditional: (product) => !product || product == "new",
-      onFailure: () => {
+      onFailure: (err) => {
         throw Error("Failed to retrieve selected Product!");
       },
     }
   );
   const [embeddedProduct, setEmbeddedProduct] = useState(null);
   const [newProductForm, setNewProductForm] = useState(false);
-  const [selectedProductVariant, setSelectedProductVariant] = useState(null);
-  const [productVariantPicker, setProductVariantPicker] = useState(false);
   const [productPicker, setProductPicker] = useState(true);
-  const [newProductVariantForm, setNewProductVariantForm] = useState(false);
   const [newPurchaseForm, setNewPurchaseForm] = useState(false);
   const itemId = route?.params?.itemId;
 
@@ -88,42 +85,23 @@ const NewPurchaseForm = ({ route }) => {
       case productIsLoading == false && !!itemId:
         setSelectedProduct(itemId);
         setProductPicker(false);
-        setProductVariantPicker(true);
         setNewProductForm(false);
+        setNewPurchaseForm(true);
         break;
       case productIsLoading == null || productIsLoading == true:
       case selectedProduct == null:
-        setProductVariantPicker(false);
-        setSelectedProductVariant(null);
         setNewProductForm(false);
-        break;
-      case selectedProduct == "new":
-        setProductVariantPicker(false);
-        setSelectedProductVariant("new");
-        setNewProductForm(true);
-        break;
-      default:
-        setProductVariantPicker(true);
-        setSelectedProductVariant(null);
-        setNewProductForm(false);
-    }
-  }, [selectedProduct, productIsLoading]);
-
-  useEffect(() => {
-    switch (true) {
-      case selectedProductVariant == null:
-        setNewProductVariantForm(false);
         setNewPurchaseForm(false);
         break;
-      case selectedProductVariant == "new":
-        setNewProductVariantForm(true);
+      case selectedProduct == "new":
+        setNewProductForm(true);
         setNewPurchaseForm(true);
         break;
       default:
-        setNewProductVariantForm(false);
+        setNewProductForm(false);
         setNewPurchaseForm(true);
     }
-  }, [selectedProductVariant]);
+  }, [selectedProduct, productIsLoading]);
 
   if (productsAreLoading)
     return (
@@ -149,24 +127,6 @@ const NewPurchaseForm = ({ route }) => {
         <Picker.Item label={product.name} value={product.id} key={product.id} />
       )),
     ];
-  };
-
-  const renderProductVariantSelection = (productVariants) => {
-    const options = [
-      <Picker.Item label="Select Variant" value={null} key={null} />,
-      <Picker.Item label="New Product Variant" value="new" key="new" />,
-    ];
-    if (!productVariants) return options;
-    options.push(
-      ...productVariants.map((productVariant) => (
-        <Picker.Item
-          label={productVariant.brand}
-          value={productVariant.id}
-          key={productVariant.id}
-        />
-      ))
-    );
-    return options;
   };
 
   const renderCategorySelection = () => {
@@ -195,17 +155,11 @@ const NewPurchaseForm = ({ route }) => {
     setSelectedProduct(value);
   };
 
-  const handleProductVariantSelectionChange = (value) => {
-    setSelectedProductVariant(value);
-  };
-
   const constructEmbeddedProduct = (value) => ({
-    product: (({ productName, category, unitOfMeasure }) => ({
-      productName,
+    product: (({ name, category, unitOfMeasure, brand, unitsPerProduct, barcode }) => ({
+      name,
       category,
       unitOfMeasure,
-    }))(value),
-    productVariant: (({ brand, unitsPerProduct, barcode }) => ({
       brand,
       unitsPerProduct,
       barcode,
@@ -216,32 +170,21 @@ const NewPurchaseForm = ({ route }) => {
     }))(value),
   });
 
-  const getProductVariant = () => {
-    const variant = product.productVariants.filter(
-      (variant) => variant.id === selectedProductVariant
-    )[0];
-    return (({ id, brand, unitsPerProduct, barcode }) => ({
+  const getProduct = () => {
+    return (({ id, name, category, unitOfMeasure, brand, unitsPerProduct, barcode }) => ({
       id,
+      name,
+      category: category.json,
+      unitOfMeasure: unitOfMeasure.json,
       brand,
       unitsPerProduct,
       barcode,
-    }))(variant);
-  };
-
-  const getProduct = () => {
-    return (({ id, name, category, unitOfMeasure }) => ({
-      id,
-      productName: name,
-      category: category.json,
-      unitOfMeasure: unitOfMeasure.json,
     }))(product);
   };
 
   const onSubmit = (value) => {
     var embeddedProduct = constructEmbeddedProduct(value);
-
-    if (selectedProductVariant !== "new")
-      embeddedProduct.productVariant = getProductVariant();
+    
     if (selectedProduct !== "new") embeddedProduct.product = getProduct();
 
     setEmbeddedProduct(embeddedProduct);
@@ -262,7 +205,7 @@ const NewPurchaseForm = ({ route }) => {
         {newProductForm && (
           <View>
             <Controller
-              name="productName"
+              name="name"
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
@@ -311,20 +254,6 @@ const NewPurchaseForm = ({ route }) => {
                 )}
               />
             </View>
-          </View>
-        )}
-        <StandardPageDeliminator />
-        <Picker
-          style={styles.objectPickerStyle}
-          enabled={productVariantPicker}
-          selectedValue={selectedProductVariant}
-          onValueChange={handleProductVariantSelectionChange}
-          testID="productVariantPicker"
-        >
-          {renderProductVariantSelection(product?.productVariants)}
-        </Picker>
-        {newProductVariantForm && (
-          <View>
             <Controller
               name="brand"
               control={control}
@@ -335,7 +264,7 @@ const NewPurchaseForm = ({ route }) => {
                   onChangeText={onChange}
                   value={value}
                   onBlur={onBlur}
-                  testID="variantBrandInput"
+                  testID="productBrandInput"
                 />
               )}
             />
@@ -350,7 +279,7 @@ const NewPurchaseForm = ({ route }) => {
                   onChangeText={onChange}
                   value={value}
                   onBlur={onBlur}
-                  testID="variantUPPInput"
+                  testID="productUPPInput"
                 />
               )}
             />
@@ -365,7 +294,7 @@ const NewPurchaseForm = ({ route }) => {
                   onChangeText={onChange}
                   value={value}
                   onBlur={onBlur}
-                  testID="variantBarcodeInput"
+                  testID="productBarcodeInput"
                 />
               )}
             />

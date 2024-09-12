@@ -25,31 +25,22 @@ export function startMockAPIServer({ environment = "development" } = {}) {
       });
 
       this.post("/products", (schema, request) => {
-        const { product, product_variant, purchase } = JSON.parse(
-          request.requestBody
-        );
-
+        const { product, purchase } = JSON.parse(request.requestBody);
+      
         const createdProduct =
           product.id && schema.products.findBy({ id: product.id })
             ? schema.products.findBy({ id: product.id })
-            : schema.products.create(object().camelCase().cast(product));
-
-        const createdProductVariant =
-          product_variant.id &&
-          schema.productVariants.findBy({ id: product_variant.id })
-            ? schema.productVariants.findBy({ id: product_variant.id })
-            : schema.productVariants.create(
-                Object.assign(object().camelCase().cast(product_variant), {
-                  product: createdProduct,
-                })
-              );
-
+            : schema.products.create(object().camelCase().cast({
+              ...product,
+              productsOnHand: 2,
+            }));
+      
         const createdPurchase = schema.purchases.create(
           Object.assign(object().camelCase().cast(purchase), {
-            productVariant: createdProductVariant,
+            product: createdProduct,
           })
         );
-
+      
         return schema.products.findBy({ id: product.id });
       });
 
@@ -59,22 +50,14 @@ export function startMockAPIServer({ environment = "development" } = {}) {
     },
     models: {
       product: Model.extend({
-        productVariants: hasMany(),
-      }),
-      productVariant: Model.extend({
         purchases: hasMany(),
-        product: belongsTo(),
       }),
       purchase: Model.extend({
-        productVariant: belongsTo(),
+        product: belongsTo(),
       }),
     },
     serializers: {
       product: ApplicationSerializer.extend({
-        include: ["productVariants"],
-        embed: true,
-      }),
-      productVariant: ApplicationSerializer.extend({
         include: ["purchases"],
         embed: true,
       }),
@@ -82,7 +65,7 @@ export function startMockAPIServer({ environment = "development" } = {}) {
     },
     factories: {
       product: Factory.extend({
-        productName() {
+        name() {
           return faker.commerce.productName();
         },
         category() {
@@ -90,15 +73,10 @@ export function startMockAPIServer({ environment = "development" } = {}) {
             Object.values(getProductCategories())
           ).json;
         },
-        unitsOnHand() {
-          return faker.number.int({ min: 4, max: 200 });
-        },
         unitOfMeasure() {
           return faker.helpers.arrayElement(Object.values(getUnitsOfMeasure()))
             .json;
         },
-      }),
-      productVariant: Factory.extend({
         brand() {
           return faker.company.name();
         },
@@ -123,30 +101,23 @@ export function startMockAPIServer({ environment = "development" } = {}) {
     },
     seeds(server) {
       const productsData = generateCalculatedMockData();
-
+    
       for (let i = 0; i < productsData.length; i++) {
         const productData = productsData[i];
-        const variantsData = productData.variantData;
+        const purchaseData = productData.productsOnHandPartitions;
+    
         const product = server.create("product", {
-          unitsOnHand: productData.unitsOnHand,
+          productsOnHand: productData.productsOnHand,
+          unitsPerProduct: productData.unitsPerProduct,
         });
-        for (let j = 0; j < variantsData.length; j++) {
-          const variantData = variantsData[j];
-          const purchaseData = variantData.productsOnHandPartitions;
-          const variant = server.create("productVariant", {
+    
+        for (let j = 0; j < purchaseData.length; j++) {
+          server.create("purchase", {
             product: product,
-            productsOnHand: variantData.productsOnHand,
-            unitsPerProduct: variantData.unitsPerProduct,
+            productsPurchased: purchaseData[j],
           });
-
-          for (let k = 0; k < purchaseData.length; k++) {
-            server.create("purchase", {
-              productVariant: variant,
-              productsPurchased: purchaseData[k],
-            });
-          }
         }
       }
-    },
+    }
   });
 }
