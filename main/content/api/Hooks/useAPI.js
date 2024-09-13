@@ -21,9 +21,9 @@ export const useAPI = (
             onSuccess();
           })
           .catch((err) => {
-            console.log(err);
+            console.warn(err);
             Sentry.Native.captureException(err, {});
-            onFailure();
+            onFailure(err);
           });
         return data;
       },

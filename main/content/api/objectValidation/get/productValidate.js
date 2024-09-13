@@ -3,7 +3,7 @@ import {
   getProductCategoryFromJson,
   getUnitOfMeasureFromJson,
 } from "../../../helpers/deserializationHelpers";
-import { productVariant } from "./productVariantValidate";
+import { purchase } from "./purchaseValidate";
 
 export let productListing = object({
   id: number().required(),
@@ -11,13 +11,15 @@ export let productListing = object({
   category: object()
     .required()
     .transform((val, org) => getProductCategoryFromJson(org)),
-  unitsOnHand: number().required(),
   unitOfMeasure: object()
     .required()
     .transform((val, org) => getUnitOfMeasureFromJson(org)),
+  brand: string().required(),
+  productsOnHand: number().required().positive(),
+  unitsPerProduct: number().required().positive(),
+  barcode: number().required()
 })
-  .camelCase()
-  .transformKeys((key) => handleKeyChange(key));
+  .camelCase();
 
 export let productDetails = object({
   id: number().required(),
@@ -25,20 +27,13 @@ export let productDetails = object({
   category: object()
     .required()
     .transform((val, org) => getProductCategoryFromJson(org)),
-  unitsOnHand: number().required(),
   unitOfMeasure: object()
     .required()
     .transform((val, org) => getUnitOfMeasureFromJson(org)),
-  productVariants: array().required().of(productVariant),
+  brand: string().required(),
+  productsOnHand: number().required().positive(),
+  unitsPerProduct: number().required().positive(),
+  purchases: array().required().of(purchase),
+  barcode: number().required()
 })
-  .camelCase()
-  .transformKeys((key) => handleKeyChange(key));
-
-const handleKeyChange = (key) => {
-  switch (key) {
-    case "productName":
-      return "name";
-    default:
-      return key;
-  }
-};
+  .camelCase();

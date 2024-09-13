@@ -16,6 +16,7 @@ describe("getProducts", () => {
         "http://172.16.4.51:8080/robo-pantry/products",
         expect.objectContaining({
           transformResponse: expect.any(Function),
+          timeout: 5000
         })
       );
     });
@@ -30,6 +31,20 @@ describe("getProductsById", () => {
         "http://172.16.4.51:8080/robo-pantry/products/10",
         expect.objectContaining({
           transformResponse: expect.any(Function),
+          timeout: 5000
+        })
+      );
+    });
+  });
+
+  describe("with value 0", () => {
+    it("should return call to baseUrl/products/:id", () => {
+      getProductById(0);
+      expect(axios.get).toHaveBeenCalledWith(
+        "http://172.16.4.51:8080/robo-pantry/products/0",
+        expect.objectContaining({
+          transformResponse: expect.any(Function),
+          timeout: 5000
         })
       );
     });
@@ -55,11 +70,9 @@ describe("getProductsById", () => {
 describe("postEmbeddedProduct", () => {
   let embeddedProductMock = {
     product: {
-      product_name: "Root Beer",
+      name: "Root Beer",
       category: "Beverage",
       unit_of_measure: "oz",
-    },
-    product_variant: {
       brand: "A&W",
       units_per_product: 8,
       barcode: 76982361,
@@ -75,7 +88,10 @@ describe("postEmbeddedProduct", () => {
       postEmbeddedProduct(embeddedProductMock);
       expect(axios.post).toHaveBeenCalledWith(
         "http://172.16.4.51:8080/robo-pantry/products",
-        embeddedProductMock
+        embeddedProductMock,
+        expect.objectContaining({
+          timeout: 5000
+        })
       );
     });
   });
